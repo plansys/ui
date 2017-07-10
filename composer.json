@@ -1,0 +1,20 @@
+{
+    "name": "plansys/ui",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Rizky",
+            "email": "rizky@andromedia.co.id"
+        }
+    ],
+    "require": {
+        "plansys/yard": "^0.0.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Plansys\\Ui\\": "src/",
+            "ui\\Pages\\": "pages/"
+        }
+    },
+    "minimum-stability": "dev"
+}
