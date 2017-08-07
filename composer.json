@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "plansys/yard": "^0.0.4"
+        "plansys/yard": "^0.0.5"
     },
     "autoload": {
         "psr-4": {
