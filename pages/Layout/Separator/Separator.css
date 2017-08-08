@@ -1,0 +1,51 @@
+
+.layout-separator {
+    flex: 0 1 0px;
+    box-sizing: border-box;
+    position: relative;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select:none;
+}
+
+.layout-separator.none {
+    flex: 0 0 0;
+    display: none;
+}
+
+.layout-separator.row {
+    cursor: ns-resize;
+}
+
+.layout-separator.col {
+    cursor: ew-resize;
+}
+
+.layout-separator > .layout-separator-offset {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.layout-separator.row > .layout-separator-offset {
+    top: -4px;
+    bottom: -4px;
+}
+
+.layout-separator.col > .layout-separator-offset {
+    left: -4px;
+    right: -4px;
+}
+
+.layout-separator.row.dragging > .layout-separator-offset {
+    top: -400px;
+    bottom: -400px;
+}
+
+.layout-separator.col.dragging > .layout-separator-offset {
+    left: -400px;
+    right: -400px;
+}
