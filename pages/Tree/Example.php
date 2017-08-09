@@ -75,8 +75,6 @@ JS;
         return <<<HTML
           <div>
             <js>
-
-              // Ini sebenernya nggak ribet, cuman tagnya aja yang kebanyakkan~ bebas ini, terserah si user
               let recursiveRender = (items) => {
                 return <el>
                   <ul>
