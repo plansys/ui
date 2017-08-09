@@ -5,16 +5,23 @@ namespace ui\Pages\Tree;
 class Container extends \Yard\Page {
     public function css() {
 return <<<CSS
-    // .layout-fullscreen {
-    //     position:fixed;
-    //     top:0px;
-    //     left:0px;
-    //     right:0px;
-    //     bottom:0px;
-    //     z-index:100;
-    //     display:flex;
-    //     flex-direction: row;
-    // }
+    .Tree-container {
+      background: #2b2b2b;
+      padding: 7px;
+      display: inline-block;
+      color: white;
+    }
+
+    .Tree-container ul {
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .Tree-container ul li {
+      padding-left: 15px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
 CSS;
     }
 
@@ -39,16 +46,16 @@ CSS;
         }
 
         this.makeUniqId = (datas) => {
-          let currentLevel = 0
-
           const recursive = (currentDatas) => {
+            const LEVEL = "__proto__.level"
+            const currentLevel = currentDatas[LEVEL] || 0
             return currentDatas.map((item) => {
               if (!item.uniq) item.uniq = new Date().toISOString()
               item.level = currentLevel
               // inject event
-              item.set = (shouldReturnNewItem) => this.mutateItem(item, shouldReturnNewItem, currentDatas, datas)
+              item.set = (newItem) => this.mutateItem(item, newItem, currentDatas, datas)
               if (item.sub.length) {
-                currentLevel++
+                item.sub[LEVEL] = currentLevel + 1
                 recursive(item.sub)
               }
               return item
@@ -67,27 +74,8 @@ JS;
 
     public function render() {
 return <<<HTML
-      <div>
-        <js>
-          let recursiveRender = (items) => {
-            return <el>
-              <ul>
-                <js>items.map((item, i) => {
-                  return <el>
-                    <li key="js: i">
-                      <span onClick="js: this.handleClick.bind(null, item)"><js>item.name</js></span>
-                      <js>item.sub ? recursiveRender(item.sub) : null</js>
-                    </li>
-                  </el>
-                })</js>
-              </ul>
-            </el>
-          }
-
-          return <el>
-            <h1><js>this.recursiveRender(this.props.data)</js></h1>
-          </el>
-        </js>
+      <div className="Tree-container">
+        <js>this.recursiveRender(this.props.data)</js>
       </div>
 HTML;
     }
