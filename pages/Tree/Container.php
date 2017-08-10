@@ -11,12 +11,10 @@ return <<<CSS
       display: inline-block;
       color: white;
     }
-
     .Tree-container ul {
       padding-left: 0;
       list-style: none;
     }
-
     .Tree-container ul li {
       padding-left: 15px;
       padding: 5px 10px;
@@ -24,7 +22,6 @@ return <<<CSS
     }
 CSS;
     }
-
     public function js() {
       return <<<JS
 
@@ -45,25 +42,25 @@ CSS;
           return newData
         }
 
+
         this.makeUniqId = (datas) => {
           const recursive = (currentDatas) => {
-            const LEVEL = "__proto__.level"
-            const currentLevel = currentDatas[LEVEL] || 0
+            const currentLevel = currentDatas.level || 0
             return currentDatas.map((item) => {
               if (!item.uniq) item.uniq = new Date().toISOString()
               item.level = currentLevel
-              // inject event
               item.set = (newItem) => this.mutateItem(item, newItem, currentDatas, datas)
               if (item.sub.length) {
-                item.sub[LEVEL] = currentLevel + 1
+                item.sub.level = currentLevel + 1
                 recursive(item.sub)
               }
+              item.getSiblings = () => item.sub
               return item
             })
           }
-
           return recursive(datas)
         }
+
 
         this.recursiveRender = (datas) => {
           datas = this.makeUniqId(datas)
@@ -71,7 +68,6 @@ CSS;
         }
 JS;
     }
-
     public function render() {
 return <<<HTML
       <div className="Tree-container">

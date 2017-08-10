@@ -1,8 +1,18 @@
 <?php
 
-namespace ui\Pages\Tree;
+namespace Pages;
 
-class Example extends \Yard\Page {
+class Index extends \Yard\Page {
+
+    public function query($app, $params) {
+        $file = glob("pages/*")[1];
+
+        $page = new \Plansys\Codegen\ClassCode($file);
+        $page->className = 'Rizky';
+        $page->save();
+
+        return $page;
+    }
 
     public function js() {
       return <<<JS
@@ -12,6 +22,61 @@ class Example extends \Yard\Page {
             sub: [
               {
                 name: "Sub tree 1",
+                sub: [
+                  {
+                    name: "Sub tree level 2",
+                    sub: []
+                  }
+                ]
+              },
+              {
+                name: "Sub tree 1",
+                sub: [
+                  {
+                    name: "Sub tree level 2",
+                    sub: []
+                  }
+                ]
+              }
+            ],
+          },
+          {
+            name: "Tree2",
+            sub: [
+              {
+                name: "Sub tree 2",
+                sub: [
+                  {
+                    name: "Sub tree level 2",
+                    sub: []
+                  }
+                ]
+              },
+              {
+                name: "Sub tree 2",
+                sub: [
+                  {
+                    name: "Sub tree level 2",
+                    sub: []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: "Tree3",
+            sub: [
+              {
+                name: "Sub tree 3",
+                sub: [
+                  {
+                    name: "Sub tree level 2",
+                    sub: []
+                  }
+                ]
+              },
+              {
+                name: "Sub tree 3",
                 sub: [
                   {
                     name: "Sub tree level 2",
@@ -59,6 +124,7 @@ class Example extends \Yard\Page {
         }
 
         this.handleClick = (item) => {
+          console.log(item, item.getSiblings());
           item.active = !item.active
           if (item.active && !item.sub.length) item.loading = true
           const newData = item.set({ ...item });
