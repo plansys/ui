@@ -1,8 +1,8 @@
 <?php
 
-namespace Pages;
+namespace ui\Pages\Tree;
 
-class Index extends \Yard\Page {
+class Example extends \Yard\Page {
 
     public function query($app, $params) {
         $file = glob("pages/*")[1];
@@ -141,30 +141,14 @@ JS;
         return <<<HTML
           <div>
             <js>
+
               let recursiveRender = (items) => {
                 return <el>
-                  <ul>
-                    <js> items.map((item, i) => {
-                        return <el>
-                          <li key="js: i">
-                            <js>
-                              item.loading ?
-                                <el>
-                                  <span>Loading....</span>
-                                </el>
-                              :
-                                <el>
-                                   <div>
-                                     <span onClick="js: this.handleClick.bind(null, item)"><js>item.name</js></span>
-                                     <js>item.sub && item.active ? recursiveRender(item.sub) : null</js>
-                                   </div>
-                                 </el>
-                            </js>
-                          </li>
-                        </el>
-                      })
-                    </js>
-                  </ul>
+                  <ui:Tree.Branch
+                    items="js: items"
+                    onClick="js: this.handleClick"
+                    renderMethod="js: recursiveRender"
+                  />
                 </el>
               }
 
