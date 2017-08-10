@@ -82,8 +82,8 @@ this.handleMouseMove = e => {
                 } else {
                     this.drag.delta.size = this.drag.start.size - this.drag.delta[dname];
                 }
-                component.props[pname] = this.drag.delta.size + 'px';
-                component.forceUpdate();
+
+                this.props.updateComponentSize(component, this.drag.delta.size);
             }
         }
     }

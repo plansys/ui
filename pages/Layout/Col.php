@@ -22,7 +22,7 @@ CSS;
     }
 
     public function js() {
-        return $this->loadFile("Col/Col.js");
+        return $this->loadFile("Base.js", "Col/Col.js");
     }
 
     public function render() {

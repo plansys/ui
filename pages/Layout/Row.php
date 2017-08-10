@@ -22,7 +22,7 @@ CSS;
     }
 
     public function js() {
-        return $this->loadFile("Row/Row.js");
+        return $this->loadFile("Base.js", "Row/Row.js");
     }
 
     public function render() {

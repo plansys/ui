@@ -1,28 +1,5 @@
 this.state = {
-    height: 'auto',
-    style: {
-        flexBasis: this.state.height || 'auto'
-    }
-};
-
-this.onResize = e => {
-    console.log(e);
-}
-
-this.getChildren = () => {
-    if (typeof this.props.children === 'undefined') return [];
-    else if (Array.isArray(this.props.children)) return this.props.children;
-    else return [this.props.children];
-};
-
-this.getDirection = () => {
-    let result = 'row';
-    this.getChildren().map(tag => {
-        if (typeof tag.type === "function" && tag.props.name === 'ui:Layout.Row') {
-            result = 'column';
-        }
-    });
-    return result;
+    height: 'auto'
 };
 
 this.getStyle = () => {
@@ -34,3 +11,17 @@ this.getStyle = () => {
         flexDirection: this.getDirection()
     };
 };
+
+this.children = null;
+this.renderChild = () => {
+    if (Array.isArray(this.children)) {
+        this.children = this.cloneChildren(this.children);
+    }
+    return this.children;
+};
+
+this.on('componentWillMount', () => {
+    if (!this.children) {
+        this.children = this.props.children;
+    }
+});
