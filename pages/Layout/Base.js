@@ -17,6 +17,8 @@ this.getDirection = () => {
 this.getDirection = () => {
     let result = 'row';
     this.getChildren().map(tag => {
+        if (!tag || !tag.props || !tag.props.name) return null;
+
         if (typeof tag.type === "function" && tag.props.name === 'ui:Layout.Row') {
             result = 'column';
         }
@@ -26,11 +28,15 @@ this.getDirection = () => {
 
 this.cloneChildren = (children) => {
     return children.map((tag, idx) => {
+        if (typeof tag !== 'object') return tag;
+        if (!tag || !tag.props || !tag.props.name) return null;
+
         if (this.oldResizedComponent) {
             if (this.oldResizedComponent._reactInternalInstance._currentElement.key * 1 === idx * 1) {
                 this.oldResizedComponent = null;
 
                 let size = {};
+
                 if (tag.props.name === 'ui:Layout.Col') {
                     size.width = this.newComponentSize;
                 } else if (tag.props.name === 'ui:Layout.Row') {

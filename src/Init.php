@@ -8,7 +8,7 @@ class Init
     {
         return [
             'dir'=> realpath(dirname(__FILE__) . '/..') . '/pages',
-            'url' => $host . '/pages/'
+            'url' => '/' . trim($host, '/') . '/pages/'
         ];
     }
 }

@@ -2,10 +2,9 @@
 
 namespace ui\Pages\Tree;
 
-class Item extends \Yard\Page {
-    public $norender = true;
-
+class Item extends \Yard\Page
+{
     public function render() {
-        return $this->loadFile("Item/Item.html");
+        $this->loadFile('Item/Item.html');
     }
 }
