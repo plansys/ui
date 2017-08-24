@@ -17,13 +17,13 @@ this.drag = {
 
 this.isDragging = () => {
     return this.drag.dragging ? 'dragging' : '';
-}
+};
 
 this.getParent = (el) => {
     return el._reactInternalInstance._currentElement._owner._instance;
 };
 
-this.handleMouseOut = this.handleMouseUp = e => {
+this.handleMouseUp = e => {
     this.drag = {
         dragging: false
     };
@@ -54,6 +54,7 @@ this.handleMouseMove = e => {
 
         if (this.prev && this.next) {
             let pname = this.mode === 'col' ? 'width' : 'height';
+            let pName = this.mode === 'col' ? 'Width' : 'Height';
             let oname = this.mode === 'col' ? 'offsetWidth' : 'offsetHeight';
             let dname = this.mode === 'col' ? 'x' : 'y';
             let prevsize = this.prev.props[pname];
@@ -83,6 +84,39 @@ this.handleMouseMove = e => {
                     this.drag.delta.size = this.drag.start.size - this.drag.delta[dname];
                 }
 
+                if (component.props['min' + pName]) {
+                    let minSize = 0;
+                    if (component.props['min' + pName].indexOf('px') > 0) {
+                        minSize = component.props['min' + pName].replace('px', '') * 1;
+                    }
+
+                    if (component.props['min' + pName].indexOf('%') > 0) {
+                        let parentSize = ReactDOM.findDOMNode(this.getParent(this)).parentNode['client' + pName];
+                        let percentage = component.props['min' + pName].replace('%', '') * 1 / 100;
+                        minSize = parentSize * percentage;
+                    }
+
+                    if (!isNaN(minSize) && !isNaN(this.drag.delta.size)) {
+                        this.drag.delta.size = Math.max(minSize, this.drag.delta.size);
+                    }
+                }
+
+                if (component.props['max' + pName]) {
+                    let maxSize = 0;
+                    if (component.props['max' + pName].indexOf('px') > 0) {
+                        maxSize = component.props['max' + pName].replace('px', '') * 1;
+                    }
+
+                    if (component.props['max' + pName].indexOf('%') > 0) {
+                        let parentSize = ReactDOM.findDOMNode(this.getParent(this)).parentNode['client' + pName];
+                        let percentage = component.props['max' + pName].replace('%', '') * 1 / 100;
+                        maxSize = parentSize * percentage;
+                    }
+
+                    if (!isNaN(maxSize) && !isNaN(this.drag.delta.size)) {
+                        this.drag.delta.size = Math.min(maxSize, this.drag.delta.size);
+                    }
+                }
                 this.props.updateComponentSize(component, this.drag.delta.size);
             }
         }

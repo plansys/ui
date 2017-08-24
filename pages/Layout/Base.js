@@ -26,6 +26,18 @@ this.getDirection = () => {
     return result;
 };
 
+this.isLayout = () => {
+    let isLayout = false;
+    if (this.props.children.forEach) {
+        this.props.children.forEach(c => {
+            if (c.props.name && c.props.name.indexOf('ui:Layout.') === 0) {
+                isLayout = true;
+            }
+        });
+    }
+    return isLayout;
+}
+
 this.cloneChildren = (children) => {
     return children.map((tag, idx) => {
         if (typeof tag !== 'object') return tag;
@@ -43,11 +55,13 @@ this.cloneChildren = (children) => {
                     size.height = this.newComponentSize;
                 }
 
-                return React.cloneElement(tag, {
+                let props = {
                     ...tag.props,
                     ...size,
                     key: idx
-                });
+                };
+
+                return React.cloneElement(tag, props);
             }
         }
 

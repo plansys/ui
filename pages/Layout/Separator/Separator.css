@@ -41,8 +41,8 @@
 }
 
 .layout-separator.row.dragging > .layout-separator-offset {
-    top: -400px;
-    bottom: -400px;
+    top: -9999px;
+    bottom: -9999px;
 }
 
 .layout-separator.col.dragging > .layout-separator-offset {

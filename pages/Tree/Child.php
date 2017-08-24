@@ -2,7 +2,10 @@
 
 namespace ui\Pages\Tree;
 
-class Child
+class Child extends \Yard\Page
 {
-
+    public function render()
+    {
+        return '<div></div>';
+    }
 }
