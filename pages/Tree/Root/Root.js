@@ -5,16 +5,17 @@ this.tag = () => {
     return 'div';
 };
 
+const CHILD_KEY = props.childKey
 const cleanData = (datas) => {
   const newDatas = datas.map((data) => {
     delete data.treeId
     delete data.set
     delete data.groups
 
-    const { children } = data
+    const children = data[CHILD_KEY]
     if (children && isArray(children)) {
       const newChildren = cleanData(children)
-      data.children = newChildren
+      data[CHILD_KEY] = newChildren
     }
 
     return data
@@ -37,10 +38,10 @@ const findAndMutate = (datas, treeId, mutation, root) => {
           treeId
         }
       }
-      const { children } = newData
+      const children  = newData[CHILD_KEY]
       if (children && isArray(children)) {
         const newChildren = findIt(children)
-        newData.children = newChildren
+        newData[CHILD_KEY] = newChildren
       }
       newItem = newData
       return newData
@@ -61,9 +62,9 @@ const addGroupAndSet = (datas, parent, root) => {
       const { nextData } = findAndMutate(datas, data.treeId, mutation, root)
       return nextData
     }
-    const { children } = data
+    const children = data[CHILD_KEY]
     if (children && isArray(children)) {
-      data.children = addGroupAndSet(children, data, root)
+      data[CHILD_KEY] = addGroupAndSet(children, data, root)
     }
   })
   return datas
@@ -76,10 +77,10 @@ const addUUID = (datas) => {
     const { name } = newData
     if (!name) return false
     newData.treeId = uuid()
-    const { children } = newData
+    const children = newData[CHILD_KEY]
     if (children && isArray(children)) {
       const newChildren = remakeData(children)
-      newData.children = newChildren
+      newData[CHILD_KEY] = newChildren
     }
     return newData
   })
