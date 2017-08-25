@@ -5,23 +5,6 @@ this.state = {
     }
 };
 
-this.spreadProps = () => {
-    let props = {...this.props};
-    if (props.loader) {
-        delete props.loader;
-    }
-
-    if (props.minHeight) {
-        delete props.minHeight;
-    }
-
-    if (props.maxHeight) {
-        delete props.maxHeight;
-    }
-
-    return props;
-};
-
 this.getStyle = () => {
     let flexBasis = this.props.height || 'auto';
     let justifyContent = 'flex-start';

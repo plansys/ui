@@ -36,7 +36,7 @@ this.isLayout = () => {
         });
     }
     return isLayout;
-}
+};
 
 this.cloneChildren = (children) => {
     return children.map((tag, idx) => {

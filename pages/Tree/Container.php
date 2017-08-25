@@ -27,6 +27,7 @@ class Container extends \Yard\Page
         return $res;
     }
 
+
     public function postRender($props, $children)
     {
         $dataProp = $this->getProp($props, 'data', 'this.data');
@@ -34,25 +35,19 @@ class Container extends \Yard\Page
         $itemProp = $this->getProp($props, 'item', 'item');
         $childProp = $this->getProp($props, 'child', 'item.childs');
 
-        $children = str_replace('<ui:Tree.Item>', '
-                        <js>
-                            let renderItem = (' . $itemProp . ', ' . $keyProp . ') => {
-                                return <el>
-                            ', $children);
+        $id = 'treeContainer' . uniqid();
+        $props['ref'] = "js: function(ref) { this.{$id} = ref }.bind(this)";
+        $children = $this->replaceTreeItem($children, $id, $keyProp, $itemProp, $dataProp);
+        $children = $this->replaceTreeChild($children, $childProp);
 
-        $children = str_replace('</ui:Tree.Item>', '
-                                </el>
-                            }
+        return [
+            'props' => $props,
+            'children' => $children
+        ];
+    }
 
-                            let renderTree = (data) => {
-                                return data.map(e => renderItem(e))
-                            }
-                            
-                            if (' . $dataProp . ') {
-                                return renderTree(' . $dataProp . ');
-                            }
-                        </js>', $children);
-
+    private function replaceTreeChild($children, $childProp)
+    {
         $childJs = "
               <js>
                     if ($childProp) {
@@ -62,6 +57,32 @@ class Container extends \Yard\Page
 
         $children = preg_replace('/<ui:Tree.Child>(.*?)<\/ui:Tree.Child>/', $childJs, $children);
         $children = preg_replace('/<ui:Tree.Child(\s*)\/>/', $childJs, $children);
+        return $children;
+    }
+
+    private function replaceTreeItem($children, $id, $keyProp, $itemProp, $dataProp)
+    {
+        $children = str_replace("<ui:Tree.Item>", '
+                        <js>
+                        
+                            let renderItem = (' . $itemProp . ', ' . $keyProp . ') => {
+                                return  ', $children);
+
+        $children = str_replace('</ui:Tree.Item>', '
+                            }
+
+                            let renderTree = (data) => {
+                                if (!data.map) {
+                                    throw new Error("Tree data is not an array! current data is (" + typeof data + ") \n\n " + data);
+                                }
+                                
+                                return data.map((e, idx) => renderItem(e, idx))
+                            }
+                            
+                            if (this.' . $id . ' && ' . $dataProp . ') {
+                                return renderTree(this.' . $id . '.remakeData(' . $dataProp . '));
+                            }
+                        </js>', $children);
 
         return $children;
     }

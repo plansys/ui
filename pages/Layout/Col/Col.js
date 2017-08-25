@@ -2,26 +2,6 @@ this.state = {
     height: 'auto'
 };
 
-this.spreadProps = () => {
-    let props = {...this.props};
-    if (props.loader) {
-        delete props.loader;
-    }
-
-    if (props.minWidth) {
-        delete props.minWidth;
-    }
-
-    if (props.maxWidth) {
-        delete props.maxWidth;
-    }
-
-    if (props.align) {
-        delete props.align;
-    }
-
-    return props;
-};
 this.getStyle = () => {
     let flexBasis = this.props.width || 'auto';
 
