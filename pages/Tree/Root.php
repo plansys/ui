@@ -2,18 +2,18 @@
 
 namespace ui\Pages\Tree;
 
-class Container extends \Yard\Page
+class Root extends \Yard\Page
 {
     public $executePostRender = true;
 
     public function js()
     {
-        return $this->loadFile('Container/Container.js');
+        return $this->loadFile('Root/Root.js');
     }
 
     public function render()
     {
-        return $this->loadFile('Container/Container.html');
+        return $this->loadFile('Root/Root.html');
     }
 
     private function getProp($props, $key, $default)
@@ -33,12 +33,12 @@ class Container extends \Yard\Page
         $dataProp = $this->getProp($props, 'data', 'this.data');
         $keyProp = $this->getProp($props, 'key', 'key');
         $itemProp = $this->getProp($props, 'item', 'item');
-        $childProp = $this->getProp($props, 'child', 'item.childs');
+        $childProp = $this->getProp($props, 'childKey', 'children');
 
         $id = 'treeContainer' . uniqid();
         $props['ref'] = "js: function(ref) { this.{$id} = ref }.bind(this)";
         $children = $this->replaceTreeItem($children, $id, $keyProp, $itemProp, $dataProp);
-        $children = $this->replaceTreeChild($children, $childProp);
+        $children = $this->replaceTreeChild($children, $childProp, $itemProp);
 
         return [
             'props' => $props,
@@ -46,12 +46,12 @@ class Container extends \Yard\Page
         ];
     }
 
-    private function replaceTreeChild($children, $childProp)
+    private function replaceTreeChild($children, $childProp, $itemProp)
     {
         $childJs = "
               <js>
-                    if ($childProp) {
-                        return renderTree($childProp)
+                    if ($itemProp.$childProp) {
+                        return renderTree($itemProp.$childProp)
                     }
               </js>";
 
