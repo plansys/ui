@@ -80,7 +80,8 @@ class Root extends \Yard\Page
                             }
                             
                             if (this.' . $id . ' && ' . $dataProp . ') {
-                                return renderTree(this.' . $id . '.remakeData(' . $dataProp . '));
+                                let data = this.' . $id . '.remakeData(' . $dataProp . ');
+                                return renderTree(data);
                             }
                         </js>', $children);
 
