@@ -4,6 +4,14 @@ function isArray() {
     return typeof arr === 'object' && arr.length;
 }
 
+function isObject(obj) {
+  return typeof(obj) === 'object' && !obj.length
+}
+
+function isFrozen(obj) {
+  return Object.isFrozen(obj)
+}
+
 // https://www.npmjs.com/package/lil-uuid
 function uuid() {
     var uuid = '', i, random
