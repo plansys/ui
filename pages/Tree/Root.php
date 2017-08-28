@@ -64,7 +64,7 @@ class Root extends \Yard\Page
     {
         $children = str_replace("<ui:Tree.Item>", '
                         <js>
-                        
+
                             let renderItem = (' . $itemProp . ', ' . $keyProp . ') => {
                                 return  ', $children);
 
@@ -75,10 +75,10 @@ class Root extends \Yard\Page
                                 if (!data.map) {
                                     throw new Error("Tree data is not an array! current data is (" + typeof data + ") \n\n " + data);
                                 }
-                                
+
                                 return data.map((e, idx) => renderItem(e, idx))
                             }
-                            
+
                             if (this.' . $id . ' && ' . $dataProp . ') {
                                 return renderTree(this.' . $id . '.remakeData(' . $dataProp . '));
                             }
