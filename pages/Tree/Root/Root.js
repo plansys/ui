@@ -31,7 +31,7 @@ this.tag = () => {
     return 'div';
 };
 
-const CHILD_KEY = props.childKey
+const CHILD_KEY = this.props.childKey
 
 const addUUID = (currentDatas) => {
   const newDatas = currentDatas.map((data) => {
@@ -295,6 +295,7 @@ const freezeData = (datas) => {
 }
 
 const remakeData = (datas) => {
+
   let newDatas = datas
   // Deep Copy
   newDatas = addUUID(newDatas)
