@@ -20,24 +20,24 @@ class Root extends \Yard\Page
     {
         $res = isset($props[$key]) ? $props[$key] : $default;
 
-        if (strpos('$res', 'js:') === 0) {
+        if (strpos($res, 'js:') === 0) {
             $res = substr($res, 3);
         }
 
         return $res;
     }
 
-
-    public function postRender($props, $children)
+    public function postRender($props, $children, $instanceIndex = 0)
     {
         $dataProp = $this->getProp($props, 'data', 'this.data');
         $keyProp = $this->getProp($props, 'key', 'key');
         $itemProp = $this->getProp($props, 'item', 'item');
         $childProp = $this->getProp($props, 'childKey', 'children');
 
-        $id = 'treeContainer' . uniqid();
-        $props['ref'] = "js: function(ref) { this.{$id} = ref }.bind(this)";
-        $children = $this->replaceTreeItem($children, $id, $keyProp, $itemProp, $dataProp);
+        $props['ref'] = "js: function(ref) { 
+            this._treeRoot{$instanceIndex} = ref;
+         }.bind(this)";
+        $children = $this->replaceTreeItem($children, $instanceIndex, $keyProp, $itemProp, $dataProp);
         $children = $this->replaceTreeChild($children, $childProp, $itemProp);
 
         return [
@@ -60,7 +60,7 @@ class Root extends \Yard\Page
         return $children;
     }
 
-    private function replaceTreeItem($children, $id, $keyProp, $itemProp, $dataProp)
+    private function replaceTreeItem($children, $idx, $keyProp, $itemProp, $dataProp)
     {
         $children = str_replace("<ui:Tree.Item>", '
                         <js>
@@ -79,8 +79,8 @@ class Root extends \Yard\Page
                                 return data.map((e, idx) => renderItem(e, idx))
                             }
 
-                            if (this.' . $id . ' && ' . $dataProp . ') {
-                                let data = this.' . $id . '.remakeData(' . $dataProp . ');
+                            if (this._treeRoot' . $idx . ' && ' . $dataProp . ') {
+                                let data = this._treeRoot' . $idx . '.remakeData(' . $dataProp . ');
                                 return renderTree(data);
                             }
                         </js>', $children);
