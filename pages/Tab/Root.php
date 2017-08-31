@@ -36,6 +36,7 @@ class Root extends Page
 
         $props['ref'] = "js: function(ref) {
             this._tabRoot{$instanceIdx} = ref;
+            this.forceUpdate();
         }.bind(this)";
 
         $props['$parent'] = "js: this";
