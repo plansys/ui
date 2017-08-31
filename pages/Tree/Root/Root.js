@@ -29,7 +29,6 @@ this.tag = () => {
 };
 
 const CHILD_KEY = this.props.childKey
-
 const addUUID = (currentDatas) => {
     const newDatas = currentDatas.map((data) => {
         let newData = {...data}
@@ -137,11 +136,20 @@ const addGroupAndSet = (currentDatas, parent, root) => {
         data.$getRawRoot = () => root
         data.$make = (obj) => makeData(obj)
         data.$set = (mutation) => {
+
+            // if (mutation[CHILD_KEY]) {
+            //     let newChild = addUUID(mutation[CHILD_KEY])
+            //     // Make parent, group and root references
+            //     let newChildSet =  addGroupAndSet(newChild, mutation, root)
+            //     // Make it Immutable
+            //     mutation[CHILD_KEY] = freezeData(newChildSet)
+            // }
+
             const {nextData} = findAndMutate(data.$id, mutation, data.$getRawRoot())
             // Fix new parent, group, and root references
             const fixData = addGroupAndSet(nextData, false, nextData)
             const immutable = freezeData(fixData)
-            const newItem = findRecursive(data.$id, immutable)
+            const newItem = findRecursive(data.$id, immutable);
             return newItem
         }
 
@@ -292,7 +300,6 @@ const freezeData = (datas) => {
 }
 
 const remakeData = (datas) => {
-
     let newDatas = datas
     // Deep Copy
     newDatas = addUUID(newDatas)
