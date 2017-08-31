@@ -52,28 +52,78 @@ const cleanData = (currentDatas) => {
     return result
 }
 
-this.active =  null;
+this.active = null;
 
-const duplicateData = (currentDatas) => {
+const duplicateData = (tabs) => {
 
     // Using forEach to not mutate the source currentDatas
-    currentDatas.forEach((data, i) => {
-        if (isFrozen(data)) return false
+    tabs.forEach((item, idx) => {
+        if (isFrozen(item)) return false
+        item.$index = idx;
 
-        data.$cleanData = (datas) => {
+        item.$cleanData = (datas) => {
             if (isArray(datas)) return cleanData(datas)
             if (isObject(datas)) return cleanData([datas])[0]
             return false
         }
 
-        data.$activate = () => {
-            this.active = data;
+        item.$activate = () => {
+            this.active = item;
             this.props.$parent.forceUpdate();
+            return item;
         }
 
-        data.$getRoot = () => cleanData(root)
+        item.$close = () => {
+            tabs.splice(idx, 1);
+            let newTabs = remakeData(tabs);
+
+            if (!!this.active && item.$index === this.active.$index) {
+                let newIdx = idx === tabs.length ? idx - 1 : idx;
+
+                if (tabs.length > 1) {
+                    this.active = newTabs[newIdx];
+                    this.active.$index = newIdx;
+                } else {
+                    this.active = null;
+                }
+            }
+
+            return newTabs;
+        }
+
+
+        item.$closeOther = () => {
+            tabs.splice(idx + 1, tabs.length - 1);
+            tabs.splice(0, idx);
+
+            let newTabs = remakeData(tabs);
+            this.active = newTabs[0];
+            return newTabs;
+        }
+
+        item.$closeRight = () => {
+            tabs.splice(idx + 1, tabs.length - 1);
+            let newTabs = remakeData(tabs);
+
+            if (this.active && this.active.$index > idx) {
+                this.active = newTabs[idx];
+            }
+            return newTabs;
+        }
+
+        item.$closeLeft = () => {
+            tabs.splice(0, idx);
+            let newTabs = remakeData(tabs);
+
+            if (this.active && this.active.$index < idx) {
+                this.active = newTabs[0];
+            }
+            return newTabs;
+        }
+
+        item.$getRoot = () => cleanData(tabs)
     });
-    return currentDatas;
+    return tabs;
 };
 
 const remakeData = (datas) => {

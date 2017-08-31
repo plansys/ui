@@ -85,13 +85,11 @@ class Root extends Page
                         <js>
                             let currentTab = this._tabRoot' . $idx . ';
                             let renderTabContent = (' . $itemProp . ') => {
-                                return ', $children);
+                                return <div>', $children);
 
         $children = str_replace("</ui:Tab.Content>", '
-                                
+                                </div>;
                             }
-                            
-                            console.log(currentTab)
                             
                             if (currentTab && currentTab.active) {
                                 return renderTabContent(currentTab.active);
