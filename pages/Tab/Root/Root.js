@@ -68,6 +68,9 @@ const duplicateData = (tabs) => {
         }
 
         item.$activate = () => {
+            if (typeof this.props.onChange == 'function') {
+                this.props.onChange(item, this.active);
+            }
             this.active = item;
             this.props.$parent.forceUpdate();
             return item;

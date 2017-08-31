@@ -136,15 +136,6 @@ const addGroupAndSet = (currentDatas, parent, root) => {
         data.$getRawRoot = () => root
         data.$make = (obj) => makeData(obj)
         data.$set = (mutation) => {
-
-            // if (mutation[CHILD_KEY]) {
-            //     let newChild = addUUID(mutation[CHILD_KEY])
-            //     // Make parent, group and root references
-            //     let newChildSet =  addGroupAndSet(newChild, mutation, root)
-            //     // Make it Immutable
-            //     mutation[CHILD_KEY] = freezeData(newChildSet)
-            // }
-
             const {nextData} = findAndMutate(data.$id, mutation, data.$getRawRoot())
             // Fix new parent, group, and root references
             const fixData = addGroupAndSet(nextData, false, nextData)
