@@ -156,7 +156,9 @@ const addGroupAndSet = (currentDatas, parent, root) => {
         data.$delete = (clean) => {
             const targetIndex = data.$group.findIndex((find) => find.$id === data.$id)
             if (targetIndex === false) return false
-            const newGroup = data.$group.splice(targetIndex, 1)
+
+            data.$group.splice(targetIndex, 1)
+
             return clean ? data.$cleanData(data.$group) : data.$group;
         }
 
@@ -190,7 +192,6 @@ const addGroupAndSet = (currentDatas, parent, root) => {
             if (siblingIndex >= maxIndex) siblingIndex = maxIndex
             if (siblingIndex < minIndex) siblingIndex = 0
 
-            let newRoot = false
             let newGroup = [...data.$group]
             const newSibling = makeData(newItem)
             newGroup.splice(siblingIndex, 0, newSibling)
@@ -223,9 +224,12 @@ const addGroupAndSet = (currentDatas, parent, root) => {
         data.$duplicate = () => {
             const cleanItem = data.$cleanData(data)
             const newItem = makeData(cleanItem)
-            const newItemId = newItem.$id
             data = data.$next(newItem)
             return data
+        }
+
+        data.$setChild = (childs) => {
+            
         }
 
         data.$append = (newItem) => {

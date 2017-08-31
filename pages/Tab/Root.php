@@ -34,9 +34,19 @@ class Root extends Page
         $dataProp = $this->getProp($props, 'data', 'this.data');
         $itemProp = $this->getProp($props, 'item', 'item');
 
+        $oldRef = '';
+        if (isset($props['ref'])) {
+            if (strpos($props['ref'], 'js') !== false) {
+                $oldRef = str_replace('js:', 'let oldRef = ', $props['ref']);
+                $oldRef = 'if (typeof oldRef === "function") { oldRef(); }';
+            }
+        }
+
         $props['ref'] = "js: function(ref) {
             this._tabRoot{$instanceIdx} = ref;
             this.forceUpdate();
+            
+            {$oldRef}
         }.bind(this)";
 
         $props['$parent'] = "js: this";
@@ -46,7 +56,7 @@ class Root extends Page
 
         return [
             'props' => $props,
-            'children' =>  $children
+            'children' => $children
         ];
     }
 
