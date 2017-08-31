@@ -28,7 +28,7 @@ this.getDirection = () => {
 
 this.isLayout = () => {
     let isLayout = false;
-    if (this.props.children.forEach) {
+    if (this.props.children && this.props.children.forEach) {
         this.props.children.forEach(c => {
             if (!!c.props && c.props.name && c.props.name.indexOf('ui:Layout.') === 0) {
                 isLayout = true;

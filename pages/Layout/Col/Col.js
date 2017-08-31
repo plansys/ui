@@ -32,6 +32,7 @@ this.getStyle = () => {
     }
 
     return {
+        position: 'relative',
         ...this.props.style,
         flexBasis,
         flexGrow: flexBasis === 'auto' ? 1 : 0,
