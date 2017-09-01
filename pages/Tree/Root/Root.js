@@ -1,4 +1,4 @@
-function isArray() {
+function isArray(arr) {
     return typeof arr === 'object' && arr.length;
 }
 
@@ -136,6 +136,16 @@ const addGroupAndSet = (currentDatas, parent, root) => {
         data.$getRawRoot = () => root
         data.$make = (obj) => makeData(obj)
         data.$set = (mutation) => {
+            const childs = mutation[CHILD_KEY];
+            if (isArray(childs)) {
+                mutation[CHILD_KEY] = childs.map(c => {
+                    if (!c.$id) {
+                        return makeData(c);
+                    }
+                    return c;
+                })
+            }
+
             const {nextData} = findAndMutate(data.$id, mutation, data.$getRawRoot())
             // Fix new parent, group, and root references
             const fixData = addGroupAndSet(nextData, false, nextData)
@@ -149,7 +159,6 @@ const addGroupAndSet = (currentDatas, parent, root) => {
             if (targetIndex === false) return false
 
             data.$group.splice(targetIndex, 1)
-
             return clean ? data.$cleanData(data.$group) : data.$group;
         }
 
@@ -217,10 +226,6 @@ const addGroupAndSet = (currentDatas, parent, root) => {
             const newItem = makeData(cleanItem)
             data = data.$next(newItem)
             return data
-        }
-
-        data.$setChild = (childs) => {
-            
         }
 
         data.$append = (newItem) => {

@@ -1,4 +1,4 @@
-function isArray() {
+function isArray(arr) {
     return typeof arr === 'object' && arr.length;
 }
 

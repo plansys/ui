@@ -27,7 +27,7 @@ class Root extends \Yard\Page
         return $res;
     }
 
-    public function postRender($props, $children, $instanceIndex = 0)
+    public function postRender($props, $children, $instanceIndex = 0, $childArray)
     {
         $dataProp = $this->getProp($props, 'data', 'this.data');
         $keyProp = $this->getProp($props, 'key', 'key');
@@ -60,31 +60,31 @@ class Root extends \Yard\Page
         return $children;
     }
 
-    private function replaceTreeItem($children, $idx, $keyProp, $itemProp, $dataProp)
+    private function replaceTreeItem($content, $idx, $keyProp, $itemProp, $dataProp)
     {
-        $children = str_replace("<ui:Tree.Item>", '
-                        <js>
+        return $this->replaceTagContent('ui:Tree.Item', $content,
+            function ($children) use ($idx, $keyProp, $itemProp, $dataProp) {
+                return <<<JS
+    <js>
+        let renderItem = ({$itemProp}, {$keyProp}) => {
+            return {$children};
+        }
 
-                            let renderItem = (' . $itemProp . ', ' . $keyProp . ') => {
-                                return  ', $children);
+        let renderTree = (data) => {
+            if (!data.map) {
+                throw new Error("Tree data is not an array! current data is (" + typeof data + ") ", data);
+            }
 
-        $children = str_replace('</ui:Tree.Item>', '
-                            }
+            return data.map((e, idx) => renderItem(e, idx));
+        }
 
-                            let renderTree = (data) => {
-                                if (!data.map) {
-                                    throw new Error("Tree data is not an array! current data is (" + typeof data + ") \n\n " + data);
-                                }
-
-                                return data.map((e, idx) => renderItem(e, idx))
-                            }
-
-                            if (this._treeRoot' . $idx . ' && ' . $dataProp . ') {
-                                let data = this._treeRoot' . $idx . '.remakeData(' . $dataProp . ');
-                                return renderTree(data);
-                            }
-                        </js>', $children);
-
-        return $children;
+        if (this._treeRoot{$idx} && {$dataProp}) {
+            let data = this._treeRoot{$idx}.remakeData({$dataProp});
+            
+            return renderTree(data);
+        }
+    </js>
+JS;
+            });
     }
 }

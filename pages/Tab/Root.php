@@ -29,7 +29,7 @@ class Root extends Page
         return $res;
     }
 
-    public function postRender($props, $children, $instanceIdx = 0)
+    public function postRender($props, $children, $instanceIdx = 0, $childArray)
     {
         $dataProp = $this->getProp($props, 'data', 'this.data');
         $itemProp = $this->getProp($props, 'item', 'item');
@@ -51,8 +51,20 @@ class Root extends Page
 
         $props['$parent'] = "js: this";
 
-        $children = $this->replaceTabNav($children, $instanceIdx, $itemProp, $dataProp);
-        $children = $this->replaceContent($children, $instanceIdx, $itemProp, $dataProp);
+        $tabNav = self::FindTag($childArray, 'ui:Tab.Nav');
+        $wrapTabNav = false;
+        if (is_array($tabNav) && count($tabNav) == 3) {
+            $wrapTabNav = count($tabNav[2]) > 1;
+        }
+
+        $tabContent = self::FindTag($childArray, 'ui:Tab.Content');
+        $wrapTabContent = false;
+        if (is_array($tabContent) && count($tabContent) == 3) {
+            $wrapTabContent = count($tabContent[2]) > 1;
+        }
+
+        $children = $this->replaceTabNav($children, $instanceIdx, $itemProp, $dataProp, $wrapTabNav);
+        $children = $this->replaceContent($children, $instanceIdx, $itemProp, $dataProp, $wrapTabContent);
 
         return [
             'props' => $props,
@@ -60,54 +72,57 @@ class Root extends Page
         ];
     }
 
-    public function replaceTabNav($children, $idx, $itemProp, $dataProp)
+    public function replaceTabNav($content, $idx, $itemProp, $dataProp, $wrapTag)
     {
-        $children = str_replace("<ui:Tab.Nav>", '
-                        <js>
-                            let renderTabNav = (' . $itemProp . ') => {
-                                return <div onClick="js: e => { e.preventDefault();  ' . $itemProp . '.$activate(); }">', $children);
+        return $this->replaceTagContent('ui:Tab.Nav', $content,
+            function ($children) use ($idx, $itemProp, $dataProp, $wrapTag) {
+                $children = ($wrapTag) ? '<div>' . $children . '</div>' : $children;
 
-        $children = str_replace("</ui:Tab.Nav>", '
-                                </div>; 
-                            }
+                return <<<JS
+    <js>
+        let renderTabNav = ({$itemProp}) => {
+            return <div onClick="js: e => { e.preventDefault();  {$itemProp}.\$activate(); }">
+                {$children}
+            </div>; 
+        }
 
-                            let renderTab = (data) => {
-                                if (!data.map) {
-                                    throw new Error("Tab data is not an array! current data is (" + typeof data + ") \n\n " + data);
-                                }
+        let renderTab = (data) => {
+            if (!data.map) {
+                throw new Error("Tab data is not an array! current data is (" + typeof data + ") ",  data );
+            }
 
-                                return data.map((item, idx) => renderTabNav(item, idx))
-                            }
+            return data.map((item, idx) => renderTabNav(item, idx))
+        }
 
-                            if (this._tabRoot' . $idx . ' && ' . $dataProp . ') {
-                                let data = this._tabRoot' . $idx . '.remakeData(' . $dataProp . ');
-                                let res = renderTab(data);
-                                return res;
-                            }
-                       </js>', $children);
-
-        return $children;
+        if (this._tabRoot{$idx} && {$dataProp}) {
+            let data = this._tabRoot{$idx}.remakeData({$dataProp});
+            let res = renderTab(data);
+            return res;
+        }
+   </js>
+JS;
+            });
     }
 
 
-    public function replaceContent($children, $idx, $itemProp, $dataProp)
+    public function replaceContent($content, $idx, $itemProp, $wrapTag)
     {
-        $children = str_replace("<ui:Tab.Content>", '
-                        <js>
-                            let currentTab = this._tabRoot' . $idx . ';
-                            let renderTabContent = (' . $itemProp . ') => {
-                                return ', $children);
-
-        $children = str_replace("</ui:Tab.Content>", '
-                                ;
-                            }
-                            
-                            if (currentTab && currentTab.active) {
-                                return renderTabContent(currentTab.active);
-                            }
-                        </js>
-                            ', $children);
-        return $children;
+        return $this->replaceTagContent('ui:Tab.Content', $content,
+            function ($children) use ($idx, $itemProp, $wrapTag) {
+                $children = ($wrapTag) ? '<div>' . $children . '</div>' : $children;
+                return <<<JS
+    <js>
+        let currentTab = this._tabRoot{$idx};
+        let renderTabContent = ( $itemProp ) => {
+            return {$children};
+        }
+        
+        if (currentTab && currentTab.active) {
+            return renderTabContent(currentTab.active);
+        }
+    </js>     
+JS;
+            });
     }
 
 }
