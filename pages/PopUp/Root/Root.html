@@ -1,0 +1,25 @@
+<js>
+  const { className, top, left, onContextMenu } = this.props
+  const {  active } = this.state
+  const { addCustomClassName } = this
+  return (
+    <div
+      ref="js: (el) => this.overlay = el"
+      className="js: `PopUp-overlay ${addCustomClassName(className)}`"
+      style="js: { display: active ? 'block' : 'none' }"
+      onClick="js: this.close"
+      onContextMenu="js: onContextMenu || false"
+    >
+      <div className="js: `PopUp-outer ${addCustomClassName(className)}`}"
+        <div
+          onClick="js: this.forceClose"
+          ref="js: (el) => this.inner = el"
+          className="js: `PopUp-inner ${addCustomClassName(className)}`"
+          style="js: { top: top || null, left: left || null }"
+        >
+          {this.props.children}
+        </div>
+      </div>
+    </div>
+  )
+</js>
