@@ -2,16 +2,19 @@
 
 namespace ui\Pages\Layout;
 
-class Row extends \Yard\Page {
+class Row extends \Yard\Page
+{
     public $norender = true;
 
-    public function propTypes() {
+    public function propTypes()
+    {
         return [
             'height' => 'number.isRequired'
         ];
     }
 
-    public function css() {
+    public function css()
+    {
         return <<<CSS
 .layout-row {
     flex:1 1 auto;
@@ -21,11 +24,21 @@ class Row extends \Yard\Page {
 CSS;
     }
 
-    public function js() {
-        return $this->loadFile("Base.js", "Row/Row.js");
+
+    public function includeJS()
+    {
+        return [
+            'Base.js'
+        ];
     }
 
-    public function render() {
+    public function js()
+    {
+        return $this->loadFile("Row/Row.js");
+    }
+
+    public function render()
+    {
         return $this->loadFile("Row/Row.html");
     }
 }

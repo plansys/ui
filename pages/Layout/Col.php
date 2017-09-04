@@ -2,16 +2,19 @@
 
 namespace ui\Pages\Layout;
 
-class Col extends \Yard\Page {
+class Col extends \Yard\Page
+{
     public $norender = true;
 
-    public function propTypes() {
+    public function propTypes()
+    {
         return [
             'width' => 'number.isRequired'
         ];
     }
 
-    public function css() {
+    public function css()
+    {
         return <<<CSS
 .layout-col {
     flex:1 1 auto;
@@ -21,11 +24,20 @@ class Col extends \Yard\Page {
 CSS;
     }
 
-    public function js() {
-        return $this->loadFile("Base.js", "Col/Col.js");
+    public function includeJS()
+    {
+        return [
+            'Base.js'
+        ];
     }
 
-    public function render() {
+    public function js()
+    {
+        return $this->loadFile("Col/Col.js");
+    }
+
+    public function render()
+    {
         return $this->loadFile("Col/Col.html");
     }
 }

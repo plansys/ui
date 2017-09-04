@@ -1,3 +1,5 @@
+window.yard.uiLayout(this);
+
 this.state = {
     tag: "div"
 };

@@ -64,7 +64,7 @@ class Root extends Page
         }
 
         $children = $this->replaceTabNav($children, $instanceIdx, $itemProp, $dataProp, $wrapTabNav);
-        $children = $this->replaceContent($children, $instanceIdx, $itemProp, $dataProp, $wrapTabContent);
+        $children = $this->replaceContent($children, $instanceIdx, $itemProp, $wrapTabContent);
 
         return [
             'props' => $props,
@@ -81,9 +81,7 @@ class Root extends Page
                 return <<<JS
     <js>
         let renderTabNav = ({$itemProp}) => {
-            return <div onClick="js: e => { e.preventDefault();  {$itemProp}.\$activate(); }">
-                {$children}
-            </div>; 
+            return {$children} 
         }
 
         let renderTab = (data) => {

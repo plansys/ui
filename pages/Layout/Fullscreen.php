@@ -2,11 +2,13 @@
 
 namespace ui\Pages\Layout;
 
-class Fullscreen extends \Yard\Page {
+class Fullscreen extends \Yard\Page
+{
     public $norender = true;
-    
-    public function css() {
-return <<<CSS
+
+    public function css()
+    {
+        return <<<CSS
     .layout-fullscreen {
         position:fixed;
         top:0px;
@@ -20,12 +22,21 @@ return <<<CSS
 CSS;
     }
 
-    public function js() {
-        return $this->loadFile('Base.js', 'Fullscreen/index.js');
+    public function includeJS()
+    {
+        return [
+            'Base.js'
+        ];
     }
 
-    public function render() {
-return <<<HTML
+    public function js()
+    {
+        return $this->loadFile('Fullscreen/index.js');
+    }
+
+    public function render()
+    {
+        return <<<HTML
     <js:this.state.tag className="layout-fullscreen" style="js: this.getStyle()">
         <js>this.renderChild()</js>
     </js:this.state.tag>
