@@ -8,7 +8,7 @@ class Root extends \Yard\Page
 
     public function js()
     {
-        return $this->loadFile('Root/Root.js');
+        return $this->loadFile('Root/Root.js, Root/RecursiveArray.js, Root/Mutator.js');
     }
 
     public function render()
