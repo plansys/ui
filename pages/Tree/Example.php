@@ -2,10 +2,12 @@
 
 namespace ui\Pages\Tree;
 
-class Example extends \Yard\Page {
+class Example extends \Yard\Page
+{
 
-    public function js() {
-      return <<<JS
+    public function js()
+    {
+        return <<<JS
         this.state = {
           nodes: [
             {
@@ -54,8 +56,10 @@ class Example extends \Yard\Page {
     }
 JS;
     }
-    public function render() {
-      return <<<HTML
+
+    public function render()
+    {
+        return <<<HTML
         <js>
           const renderBranch = (items, renderBranch) => {
             return <ul>
