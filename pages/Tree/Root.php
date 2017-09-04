@@ -6,9 +6,17 @@ class Root extends \Yard\Page
 {
     public $executePostRender = true;
 
+    public function includeJS()
+    {
+        return [
+            '/Libs/Mutator.js',
+            '/Libs/RecursiveArray.js'
+        ];
+    }
+
     public function js()
     {
-        return $this->loadFile('Root/Root.js, Root/RecursiveArray.js, Root/Mutator.js');
+        return $this->loadFile('Root/Root.js');
     }
 
     public function render()
@@ -27,8 +35,7 @@ class Root extends \Yard\Page
         return $res;
     }
 
-
-    public function postRender($props, $children)
+    public function postRender($props, $children, $instanceIndex, $childArray)
     {
         $dataProp = $this->getProp($props, 'data', 'this.data');
         $keyProp = $this->getProp($props, 'key', 'key');
