@@ -3,22 +3,27 @@ const { isArray, isFrozen, isObject, isFunction, isString, isNumber } = utils
 function RecursiveArray(theDatas, childKey, customInfo) {
     const CHILD_KEY = childKey
 
-    function cleanData(currentDatas) {
-        const newDatas = currentDatas.map((data) => {
-            const newData = {...data}
-            Object.keys(newData).forEach((key) => {
-                const internalProps = key.indexOf('_') === 0
-                if (internalProps) delete newData[key]
-            })
-            const children = newData[CHILD_KEY]
-            if (children && isArray(children)) {
-                const newChildren = cleanData(children)
-                newData[CHILD_KEY] = newChildren
-            }
-
-            return newData
+    function cleanData (currentDatas) {
+      let isSingle = false
+      if (!isArray(currentDatas)) {
+        isSingle = true
+        currentDatas = [currentDatas]
+      }
+      const newDatas = currentDatas.map((data) => {
+        const newData = {...data}
+        Object.keys(newData).forEach((key) => {
+          const internalProps = key.indexOf('_') === 0
+          if (internalProps) delete newData[key]
         })
-        return newDatas
+        const children = newData[CHILD_KEY]
+        if (children && isArray(children)) {
+          const newChildren = cleanData(children)
+          newData[CHILD_KEY] = newChildren
+        }
+
+        return newData
+      })
+      return isSingle ? newDatas[0] : newDatas
     }
 
     function addInfo(currentDatas, parent, root, path) {
