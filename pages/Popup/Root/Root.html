@@ -2,12 +2,17 @@
   const { className, top, left, onContextMenu } = this.props
   const {  active } = this.state
   const { addCustomClassName } = this
+<<<<<<< HEAD
   return
+=======
+  return (
+>>>>>>> c863fc717ad0c861203d090a1e00f4fc5125855f
     <div
       ref="js: (el) => this.overlay = el"
       className="js: `PopUp-overlay ${addCustomClassName(className)}`"
       style="js: { display: active ? 'block' : 'none' }"
       onClick="js: this.close"
+<<<<<<< HEAD
       onContextMenu="js: onContextMenu || false">
       <div className="js: `PopUp-outer ${addCustomClassName(className)}`">
         <div onClick="js: this.forceClose" ref="js: (el) => this.inner = el" className="js: `PopUp-inner ${addCustomClassName(className)}`" style="js: { top: top || null, left: left || null }">
@@ -15,4 +20,20 @@
         </div>
       </div>
     </div>
+=======
+      onContextMenu="js: onContextMenu || false"
+    >
+      <div className="js: `PopUp-outer ${addCustomClassName(className)}`}"
+        <div
+          onClick="js: this.forceClose"
+          ref="js: (el) => this.inner = el"
+          className="js: `PopUp-inner ${addCustomClassName(className)}`"
+          style="js: { top: top || null, left: left || null }"
+        >
+          {this.props.children}
+        </div>
+      </div>
+    </div>
+  )
+>>>>>>> c863fc717ad0c861203d090a1e00f4fc5125855f
 </js>

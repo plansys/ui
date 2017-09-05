@@ -1,4 +1,3 @@
-
 window.plansys.PopupStore = class PopupStore {
   constructor() {
     this.state = {
