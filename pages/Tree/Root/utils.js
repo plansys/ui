@@ -10,6 +10,10 @@ const utils = {
     return typeof(obj) === 'object' && !obj.length
   },
 
+  isNumber(obj) {
+    return typeof(obj) === 'number'
+  },
+
   isFrozen(obj) {
     return Object.isFrozen(obj)
   },

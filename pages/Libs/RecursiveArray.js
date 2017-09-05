@@ -1,4 +1,4 @@
-const {isArray, isFrozen, isObject, isFunction, isString} = utils
+const { isArray, isFrozen, isObject, isFunction, isString, isNumber } = utils
 
 function RecursiveArray(theDatas, childKey, customInfo) {
     const CHILD_KEY = childKey
@@ -48,7 +48,7 @@ function RecursiveArray(theDatas, childKey, customInfo) {
         }
 
         data._move = (from, to) => {
-          if (!to || !from) false
+          if (!isNumber(to) || !isNumber(from)) false
           data._group.splice(from, 1)
           data._group.splice(to, 0, data)
           return data._getRoot()
