@@ -1,4 +1,4 @@
-window.yard.uiLayout = function (that) {
+window.plansys.uiLayout = function (that) {
     const React = window.React;
     const ReactDOM = window.ReactDOM;
     that.getChildren = () => {

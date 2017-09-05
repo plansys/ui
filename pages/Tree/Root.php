@@ -6,6 +6,14 @@ class Root extends \Yard\Page
 {
     public $executePostRender = true;
 
+    public function includeJS() {
+        return [
+            '/Libs/Checker.js',
+            '/Libs/Mutator.js',
+            '/Libs/RecursiveArray.js',
+        ];
+    }
+
     public function js()
     {
         return $this->loadFile('Root/Root.js');
@@ -72,7 +80,7 @@ class Root extends \Yard\Page
 
         let renderTree = (data) => {
             if (!data.map) {
-                throw new Error("Tree data is not an array! current data is (" + typeof data + ") ", data);
+                throw new Error("Tree data is not an array! current data is (" + typeof data + ") ");
             }
 
             return data.map((e, idx) => renderItem(e, idx));

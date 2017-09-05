@@ -8,6 +8,14 @@ class Root extends Page
 {
     public $executePostRender = true;
 
+    public function includeJS() {
+        return [
+            '/Libs/Checker.js',
+            '/Libs/Mutator.js',
+            '/Libs/RecursiveArray.js',
+        ];
+    }
+
     public function js()
     {
         return $this->loadFile('Root/Root.js');
@@ -38,7 +46,7 @@ class Root extends Page
         if (isset($props['ref'])) {
             if (strpos($props['ref'], 'js') !== false) {
                 $oldRef = str_replace('js:', 'let oldRef = ', $props['ref']);
-                $oldRef = 'if (typeof oldRef === "function") { oldRef(); }';
+                $oldRef .= 'if (typeof oldRef === "function") { oldRef(); }';
             }
         }
 
@@ -86,7 +94,8 @@ class Root extends Page
 
         let renderTab = (data) => {
             if (!data.map) {
-                throw new Error("Tab data is not an array! current data is (" + typeof data + ") ",  data );
+                console.log(data);
+                throw new Error("Tab data is not an array! current data is (" + typeof data + ") ");
             }
 
             return data.map((item, idx) => renderTabNav(item, idx))
