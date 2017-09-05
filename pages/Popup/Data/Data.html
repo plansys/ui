@@ -1,0 +1,16 @@
+<js>
+  const { type, name, data, className, style, id, tag } = this.props
+  const { uuid } = this.state
+  const { addCustomClassName } = this
+  const attributes = {
+    ["data-popup-" + type]: name,
+    id: id || null,
+    className: addCustomClassName(className),
+    style: style || null,
+    uuid,
+  }
+  return
+    <js:this.props.tag js:spread="attributes">
+      <js>this.props.children</js>
+    </js:this.props.tag>
+</js>
