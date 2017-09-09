@@ -1,6 +1,6 @@
 <?php
 
-namespace ui\Pages\Utils;
+namespace ui\Pages\Drag;
 
 class Draggable extends \Yard\Page
 {

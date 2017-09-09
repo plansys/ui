@@ -3,7 +3,7 @@
 namespace ui\Pages\Layout;
 
 class Separator extends \Yard\Page {
-    public $norender = true;
+    public $library = true;
 
     public function css() {
         return $this->loadFile("Separator/Separator.css");

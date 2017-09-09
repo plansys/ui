@@ -1,29 +1,30 @@
 <?php
 
-namespace ui\Pages\Tab;
+namespace ui\Pages;
 
 use \Yard\Page;
 
-class Root extends Page
+class Tab extends Page
 {
     public $executePostRender = true;
 
-    public function includeJS() {
+    public function includeJS()
+    {
         return [
-            '/Libs/Checker.js',
-            '/Libs/Mutator.js',
-            '/Libs/RecursiveArray.js',
+            '/Utils/is.js',
+            '/Tree/Libs/Mutator.js',
+            '/Tree/Libs/RecursiveArray.js',
         ];
     }
 
     public function js()
     {
-        return $this->loadFile('Root/Root.js');
+        return $this->loadFile('Tab/Root/Root.js');
     }
 
     public function render()
     {
-        return $this->loadFile('Root/Root.html');
+        return $this->loadFile('Tab/Root/Root.html');
     }
 
     private function getProp($props, $key, $default)
@@ -42,53 +43,56 @@ class Root extends Page
         $dataProp = $this->getProp($props, 'data', 'this.data');
         $itemProp = $this->getProp($props, 'item', 'item');
 
-        $oldRef = '';
-        if (isset($props['ref'])) {
-            if (strpos($props['ref'], 'js') !== false) {
-                $oldRef = str_replace('js:', 'let oldRef = ', $props['ref']);
-                $oldRef .= 'if (typeof oldRef === "function") { oldRef(); }';
-            }
-        }
-
-        $props['ref'] = "js: function(ref) {
+        # set refs
+        $this->addRefToProps($props, "
             this._tabRoot{$instanceIdx} = ref;
             this.forceUpdate();
-            
-            {$oldRef}
-        }.bind(this)";
+        ");
 
-        $props['$parent'] = "js: this";
-
-        $tabNav = self::FindTag($childArray, 'ui:Tab.Nav');
-        $wrapTabNav = false;
+        # set nav
+        $children = $this->addKeyInTagChild('ui:Tab.Nav', 'key', $childArray);
+        $tabNav = self::findTagInArray('ui:Tab.Nav', $childArray);
+        $shouldWrapTabNav = false;
         if (is_array($tabNav) && count($tabNav) == 3) {
-            $wrapTabNav = count($tabNav[2]) > 1;
+            $shouldWrapTabNav = count($tabNav[2]) > 1;
         }
+        $children = $this->replaceTabNav($children, $instanceIdx, $itemProp, $dataProp, $shouldWrapTabNav);
 
-        $tabContent = self::FindTag($childArray, 'ui:Tab.Content');
-        $wrapTabContent = false;
+        # set content
+        $tabContent = self::findTagInArray('ui:Tab.Content', $childArray);
+        $shouldWrapTabContent = false;
         if (is_array($tabContent) && count($tabContent) == 3) {
-            $wrapTabContent = count($tabContent[2]) > 1;
+            $shouldWrapTabContent = count($tabContent[2]) > 1;
+        }
+        $children = $this->replaceContent($children, $instanceIdx, $itemProp, $shouldWrapTabContent);
+
+        # fix key in child
+        $childArray = $this->renderHtmlAsComponent($children);
+        if (count($childArray) > 1) {
+            foreach ($childArray as $k => &$c) {
+                if (is_object($c[1])) {
+                    $c[1]->key = $k;
+                }
+            }
+            $children = $this->renderComponentAsHtml($childArray);
         }
 
-        $children = $this->replaceTabNav($children, $instanceIdx, $itemProp, $dataProp, $wrapTabNav);
-        $children = $this->replaceContent($children, $instanceIdx, $itemProp, $wrapTabContent);
-
+        # return
         return [
             'props' => $props,
             'children' => $children
         ];
     }
 
-    public function replaceTabNav($content, $idx, $itemProp, $dataProp, $wrapTag)
+    public function replaceTabNav($content, $tabIdx, $itemProp, $dataProp, $wrapTag)
     {
         return $this->replaceTagContent('ui:Tab.Nav', $content,
-            function ($children) use ($idx, $itemProp, $dataProp, $wrapTag) {
+            function ($children) use ($tabIdx, $itemProp, $dataProp, $wrapTag) {
                 $children = ($wrapTag) ? '<div>' . $children . '</div>' : $children;
 
                 return <<<JS
     <js>
-        let renderTabNav = ({$itemProp}) => {
+        let renderTabNav = ({$itemProp}, key) => {
             return {$children} 
         }
 
@@ -97,12 +101,12 @@ class Root extends Page
                 console.log(data);
                 throw new Error("Tab data is not an array! current data is (" + typeof data + ") ");
             }
-
-            return data.map((item, idx) => renderTabNav(item, idx))
+            
+            return data.map((item, key) => renderTabNav(item, key))
         }
 
-        if (this._tabRoot{$idx} && {$dataProp}) {
-            let data = this._tabRoot{$idx}.remakeData({$dataProp});
+        if (this._tabRoot{$tabIdx} && {$dataProp}) {
+            let data = this._tabRoot{$tabIdx}.remakeData({$dataProp});
             let res = renderTab(data);
             return res;
         }
@@ -110,7 +114,6 @@ class Root extends Page
 JS;
             });
     }
-
 
     public function replaceContent($content, $idx, $itemProp, $wrapTag)
     {

@@ -4,7 +4,7 @@ namespace ui\Pages\Layout;
 
 class Fullscreen extends \Yard\Page
 {
-    public $norender = true;
+    public $library = true;
 
     public function css()
     {

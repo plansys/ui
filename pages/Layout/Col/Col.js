@@ -1,4 +1,4 @@
-window.plansys.uiLayout(this);
+window.plansys.ui.layout(this);
 
 this.state = {
     height: 'auto'

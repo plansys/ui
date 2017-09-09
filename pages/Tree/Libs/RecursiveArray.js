@@ -1,16 +1,19 @@
-window.plansys.RecursiveArray = class RecursiveArray {
+if (!window.plansys.ui || !window.plansys.ui.tree ) {
+    window.plansys.ui = { ...window.plansys.ui, tree: {} };
+}
+
+window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
     constructor(childKey, customInfo) {
         this.childKey = childKey;
-        this.is = window.plansys.Checker;
         this.customInfo = customInfo;
     }
 
     addInfo(currentDatas, parent, root, path = false) {
-        const mutate = window.plansys.Mutator.mutate
+        const mutate = window.plansys.ui.tree.Mutator.mutate
 
         // Using forEach to not mutate the source currentDatas
         currentDatas.forEach((data, i) => {
-            if (this.is.frozen(data)) return false
+            if (is.frozen(data)) return false
             data._index = i
             data._parent = parent
             data._parentPath = parent._path
@@ -72,7 +75,7 @@ window.plansys.RecursiveArray = class RecursiveArray {
 
             data._append = (newItem) => {
                 const children = data[CHILD_KEY]
-                if (this.is.array(children)) {
+                if (is.array(children)) {
                     return data._set({
                         [CHILD_KEY]: [
                             ...children,
@@ -85,7 +88,7 @@ window.plansys.RecursiveArray = class RecursiveArray {
 
             data._prepend = (newItem) => {
                 const children = data[CHILD_KEY]
-                if (this.is.array(children)) {
+                if (is.array(children)) {
                     return data._set({
                         [CHILD_KEY]: [
                             newItem,
@@ -111,7 +114,7 @@ window.plansys.RecursiveArray = class RecursiveArray {
             }
 
             const children = data[this.childKey]
-            if (children && this.is.array(children)) {
+            if (children && is.array(children)) {
                 const childrenPath = data._path + `.${this.childKey}`
                 data[this.childKey] = this.addInfo(children, data, root, childrenPath)
             }
@@ -122,7 +125,7 @@ window.plansys.RecursiveArray = class RecursiveArray {
 
     deepCopy(currentDatas, clean = false) {
         let isSingle = false
-        if (!this.is.array(currentDatas)) {
+        if (!is.array(currentDatas)) {
             isSingle = true
             currentDatas = [currentDatas]
         }
@@ -138,7 +141,7 @@ window.plansys.RecursiveArray = class RecursiveArray {
             }
 
             const children = newData[this.childKey]
-            if (children && this.is.array(children)) {
+            if (children && is.array(children)) {
                 const newChildren = this.deepCopy(children, clean)
                 newData[this.childKey] = newChildren
             }

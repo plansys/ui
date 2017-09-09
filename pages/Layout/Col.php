@@ -4,7 +4,7 @@ namespace ui\Pages\Layout;
 
 class Col extends \Yard\Page
 {
-    public $norender = true;
+    public $library = true;
 
     public function propTypes()
     {

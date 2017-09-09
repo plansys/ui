@@ -1,6 +1,9 @@
-window.plansys.Mutator = class Mutator {
+if (!window.plansys.ui || !window.plansys.ui.tree ) {
+    window.plansys.ui = { ...window.plansys.ui, tree: {} };
+}
+
+window.plansys.ui.tree.Mutator = class Mutator {
     static mutate(source, pathString = "", mutation = false) {
-        Mutator.is = window.plansys.Checker;
         const target = Mutator._mutateInternal(source, 0, pathString.split('.'), mutation)
         return mutation ? source : target
     }
@@ -12,7 +15,7 @@ window.plansys.Mutator = class Mutator {
         const max = arrayOfPath.length
         if (nextPathIndex !== max) return Mutator._mutateInternal(copy[currentPath], nextPathIndex, arrayOfPath, mutation)
         if (mutation) {
-            copy[currentPath] = Mutator.is.func(mutation) ? mutation(copy[currentPath]) : {...copy[currentPath], ...mutation}
+            copy[currentPath] = is.function(mutation) ? mutation(copy[currentPath]) : {...copy[currentPath], ...mutation}
         }
 
         return copy[currentPath]

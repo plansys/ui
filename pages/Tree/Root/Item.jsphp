@@ -1,0 +1,16 @@
+let renderItem = ($itemProp, $keyProp) => {
+    return $children;
+}
+
+let renderTree = (data) => {
+    if (!data.map) {
+        throw new Error("Tree data is not an array! current data is (" + typeof data + ") ");
+    }
+
+    return data.map((e, key) => renderItem(e, key));
+}
+
+if (this._treeRoot$treeIdx && $dataProp) {
+    let data = this._treeRoot$treeIdx.remakeData($dataProp);
+    return renderTree(data);
+}

@@ -18,8 +18,8 @@ this.tag = () => {
 };
 
 const remakeData = (datas) => {
-    const reray = new window.plansys.RecursiveArray(this.props.childKey);
-    return reray.remakeData(datas);
+    const recursiveArray = new window.plansys.ui.tree.RecursiveArray(this.props.childKey);
+    return recursiveArray.remakeData(datas);
 }
 
 this.remakeData = remakeData

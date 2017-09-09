@@ -1,4 +1,8 @@
-window.plansys.uiLayout = function (that) {
+if (!window.plansys.ui) {
+    window.plansys.ui = {};
+}
+
+window.plansys.ui.layout = function (that) {
     const React = window.React;
     const ReactDOM = window.ReactDOM;
     that.getChildren = () => {
@@ -10,19 +14,9 @@ window.plansys.uiLayout = function (that) {
     that.getDirection = () => {
         let result = 'row';
         that.getChildren().map(tag => {
-            if (typeof tag.type === "function" && tag.props.name === 'ui:Layout.Row') {
-                result = 'column';
-            }
-        });
-        return result;
-    };
+            if (!tag || !tag.props || !tag.props['[[name]]']) return null;
 
-    that.getDirection = () => {
-        let result = 'row';
-        that.getChildren().map(tag => {
-            if (!tag || !tag.props || !tag.props.name) return null;
-
-            if (typeof tag.type === "function" && tag.props.name === 'ui:Layout.Row') {
+            if (typeof tag.type === "function" && tag.props['[[name]]'] === 'ui:Layout.Row') {
                 result = 'column';
             }
         });
@@ -33,7 +27,7 @@ window.plansys.uiLayout = function (that) {
         let isLayout = false;
         if (that.props.children && that.props.children.forEach) {
             that.props.children.forEach(c => {
-                if (!!c.props && c.props.name && c.props.name.indexOf('ui:Layout.') === 0) {
+                if (!!c.props && c.props['[[name]]'] && c.props['[[name]]'].indexOf('ui:Layout.') === 0) {
                     isLayout = true;
                 }
             });
@@ -44,7 +38,7 @@ window.plansys.uiLayout = function (that) {
     that.cloneChildren = (children) => {
         return children.map((tag, idx) => {
             if (typeof tag !== 'object') return tag;
-            if (!tag || !tag.props || !tag.props.name) return null;
+            if (!tag || !tag.props || !tag.props['[[name]]']) return null;
 
             if (that.oldResizedComponent) {
                 if (that.oldResizedComponent._reactInternalInstance._currentElement.key * 1 === idx * 1) {
@@ -52,9 +46,9 @@ window.plansys.uiLayout = function (that) {
 
                     let size = {};
 
-                    if (tag.props.name === 'ui:Layout.Col') {
+                    if (tag.props['[[name]]'] === 'ui:Layout.Col') {
                         size.width = that.newComponentSize;
-                    } else if (tag.props.name === 'ui:Layout.Row') {
+                    } else if (tag.props['[[name]]'] === 'ui:Layout.Row') {
                         size.height = that.newComponentSize;
                     }
 
@@ -68,7 +62,7 @@ window.plansys.uiLayout = function (that) {
                 }
             }
 
-            if (tag.props.name === 'ui:Layout.Separator') {
+            if (tag.props['[[name]]'] === 'ui:Layout.Separator') {
                 return React.cloneElement(tag, {
                     ...tag.props,
                     updateComponentSize: that.updateComponentSize,

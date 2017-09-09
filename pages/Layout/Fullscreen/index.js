@@ -1,4 +1,4 @@
-window.plansys.uiLayout(this);
+window.plansys.ui.layout(this);
 
 this.state = {
     tag: "div"
@@ -16,15 +16,15 @@ this.renderChild = () => {
     let firstTag = '';
     let result = [];
     this.getChildren().forEach((tag) => {
-        if (typeof tag.type === "function" && allowedTag.indexOf(tag.props.name) >= 0) {
-            if (tag.props.name === 'ui:Layout.Separator') {
+        if (typeof tag.type === "function" && allowedTag.indexOf(tag.props['[[name]]']) >= 0) {
+            if (tag.props['[[name]]'] === 'ui:Layout.Separator') {
                 result.push(tag);
             }
 
             if (firstTag === '') {
-                firstTag = tag.props.name;
+                firstTag = tag.props['[[name]]'];
                 result.push(tag);
-            } else if (tag.props.name === firstTag) {
+            } else if (tag.props['[[name]]'] === firstTag) {
                 result.push(tag);
             }
         }
