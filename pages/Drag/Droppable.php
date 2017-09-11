@@ -6,11 +6,11 @@ class Droppable extends \Yard\Page
 {
     public function js()
     {
-      return $this->loadFile('DragStore.js', 'Droppable/Droppable.js');
+      return $this->loadFile('DragStore.js', '_Droppable/Droppable.js');
     }
 
     public function render()
     {
-      return $this->loadFile('Droppable/Droppable.html');
+      return $this->loadFile('_Droppable/Droppable.html');
     }
 }

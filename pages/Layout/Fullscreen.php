@@ -31,7 +31,7 @@ CSS;
 
     public function js()
     {
-        return $this->loadFile('Fullscreen/index.js');
+        return $this->loadFile('_Fullscreen/index.js');
     }
 
     public function render()

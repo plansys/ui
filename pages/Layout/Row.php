@@ -34,11 +34,11 @@ CSS;
 
     public function js()
     {
-        return $this->loadFile("Row/Row.js");
+        return $this->loadFile("_Row/Row.js");
     }
 
     public function render()
     {
-        return $this->loadFile("Row/Row.html");
+        return $this->loadFile("_Row/Row.html");
     }
 }

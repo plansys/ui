@@ -6,9 +6,13 @@
     display: table;
     overflow-y: hidden;
     overflow-x: hidden;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }
 
 .ui-popup-container {
-    position:absolute;
-    z-index:1000
+    position: fixed;
+    z-index: 1000
 }

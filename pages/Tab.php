@@ -11,7 +11,7 @@ class Tab extends Page
     public function includeJS()
     {
         return [
-            '/Utils/is.js',
+            '/_Utils/is.js',
             '/Tree/Libs/Mutator.js',
             '/Tree/Libs/RecursiveArray.js',
         ];
@@ -19,12 +19,12 @@ class Tab extends Page
 
     public function js()
     {
-        return $this->loadFile('Tab/Root/Root.js');
+        return $this->loadFile('_Tab/Root/Root.js');
     }
 
     public function render()
     {
-        return $this->loadFile('Tab/Root/Root.html');
+        return $this->loadFile('_Tab/Root/Root.html');
     }
 
     private function getProp($props, $key, $default)

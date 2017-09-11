@@ -6,7 +6,7 @@ class Responsive extends \Yard\Page {
     public $norender = true;
 
     public function js() {
-        return $this->loadFile("Responsive/Responsive.js");
+        return $this->loadFile("_Responsive/Responsive.js");
     }
 
     public function render() {

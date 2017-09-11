@@ -8,13 +8,21 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
         this.customInfo = customInfo;
     }
 
-    addInfo(currentDatas, parent, root, path = false) {
+    addInfo(currentDatas, parent, root, depth, path = false) {
         const mutate = window.plansys.ui.tree.Mutator.mutate
 
         // Using forEach to not mutate the source currentDatas
         currentDatas.forEach((data, i) => {
             if (is.frozen(data)) return false
+
+            data._original = Object.assign({}, data);
+            Object.keys(data._original).forEach((key) => {
+                const internalProps = key.indexOf('_') === 0
+                if (internalProps) delete data._original[key]
+            })
+
             data._index = i
+            data._depth = depth
             data._parent = parent
             data._parentPath = parent._path
             data._group = currentDatas
@@ -116,7 +124,7 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
             const children = data[this.childKey]
             if (children && is.array(children)) {
                 const childrenPath = data._path + `.${this.childKey}`
-                data[this.childKey] = this.addInfo(children, data, root, childrenPath)
+                data[this.childKey] = this.addInfo(children, data, root, depth + 1, childrenPath)
             }
             Object.freeze(data)
         })
@@ -154,7 +162,7 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
     remakeData(datas) {
         let newDatas = datas
         newDatas = this.deepCopy(newDatas)
-        newDatas = this.addInfo(newDatas, false, newDatas)
+        newDatas = this.addInfo(newDatas, false, newDatas, 0)
         return newDatas
     }
 

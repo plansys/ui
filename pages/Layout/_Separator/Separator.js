@@ -125,15 +125,15 @@ this.handleMouseMove = e => {
 
 this.getType = () => {
     let parent = this.getParent(this);
-    let childrens = parent._reactInternalInstance._hostParent._renderedChildren;
+    let childs = parent._reactInternalInstance._hostParent._renderedChildren;
     let current = null;
-    for (let i in childrens) {
-        let c = childrens[i];
+    for (let i in childs) {
+        let c = childs[i];
         if (current !== null) {
             this.next = c._instance;
             break;
         }
-        if (c._instance === this.props.loader) {
+        if (c._instance === this.props['[[loader]]']) {
             current = c._instance;
         }
         if (current === null) {

@@ -1,0 +1,42 @@
+<js>
+    if (!this.isUnique) return null;
+
+    const { className } = this.props
+    const { active } = this.state
+    const { addCustomClassName } = this
+    const { top, left } = this.state.position
+    let style = {
+        top: top +'px' || null,
+        left: left +'px' || null
+    };
+
+    if (this.state.position.name == 'mouse' && this.trigger.event == 'hover') {
+        style['pointerEvents'] = 'none';
+    }
+
+    if (active) {
+        if (!this.showOverlay()) {
+            return <div className="js: `ui-popup-container ${this.addCustomClassName(className)}`"
+                     ref="js: (el) => this.popupContainer = el" onContextMenu="js: this.preventRightClick"
+                     style="js: style">
+                    <js>this.props.children</js>
+            </div>
+        } else {
+            return <div>
+                <div
+                    ref="js: (el) => this.overlayEl = el"
+                    className="js: `ui-popup-overlay ${this.addCustomClassName(className)}`"
+                    style="js: { display: active ? 'block' : 'none' }"
+                    onClick="js: this.hide"
+                    onContextMenu="js: e => { e.preventDefault(); this.hide() }">
+                </div>
+                <div className="js: `ui-popup-container ${this.addCustomClassName(className)}`"
+                     ref="js: (el) => { this.popupContainer = el; }"
+                     onContextMenu="js: this.preventRightClick"
+                     style="js: style">
+                    <js>this.props.children</js>
+                </div>
+            </div>
+        }
+    }
+</js>

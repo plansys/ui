@@ -33,11 +33,11 @@ CSS;
 
     public function js()
     {
-        return $this->loadFile("Col/Col.js");
+        return $this->loadFile("_Col/Col.js");
     }
 
     public function render()
     {
-        return $this->loadFile("Col/Col.html");
+        return $this->loadFile("_Col/Col.html");
     }
 }

@@ -9,32 +9,36 @@ class Popup extends \Yard\Page
 
     public function css()
     {
-        return $this->loadFile('Popup/Root.css');
+        return $this->loadFile('_Popup/Root.css');
     }
 
     public function includeJS()
     {
         return [
-            '/Utils/is.js'
+            '/_Utils/is.js'
         ];
     }
 
     public function js()
     {
-        return $this->loadFile('Popup/Root.js');
+        return $this->loadFile('_Popup/Root.js');
     }
 
     public function render()
     {
-        return $this->loadFile('Popup/Root.html');
+        return $this->loadFile('_Popup/Root.html');
     }
 
     public function postRender($props, $childStr, $instanceIdx, $childArray)
     {
         $this->addRefToProps($props, "
-            this._popup{$instanceIdx} = ref;
+            if (ref.isUnique) {
+                this._popup{$instanceIdx} = ref;
+            } else {
+                this._popup{$instanceIdx} = ref.instance;
+            }
             this.forceUpdate();
-        ");
+        ", 'oldRef(ref.instance || ref)');
         $dataProp = isset($props['data']) ? $props['data'] : 'data';
 
         $wrappedChild = <<<JS

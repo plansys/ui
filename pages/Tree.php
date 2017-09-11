@@ -9,20 +9,20 @@ class Tree extends \Yard\Page
     public function includeJS()
     {
         return [
-            '/Utils/is.js',
-            '/Tree/Libs/Mutator.js',
-            '/Tree/Libs/RecursiveArray.js',
+            '/_Utils/is.js',
+            '/_Tree/Libs/Mutator.js',
+            '/_Tree/Libs/RecursiveArray.js',
         ];
     }
 
     public function js()
     {
-        return $this->loadFile('Tree/Root/Root.js');
+        return $this->loadFile('_Tree/Root/Root.js');
     }
 
     public function render()
     {
-        return $this->loadFile('Tree/Root/Root.html');
+        return $this->loadFile('_Tree/Root/Root.html');
     }
 
     private function getProp($props, $key, $default)
@@ -74,10 +74,11 @@ class Tree extends \Yard\Page
 
     private function replaceTreeItem(&$childArray, $treeIdx, $keyProp, $itemProp, $dataProp)
     {
-        $js = $this->loadFile('Tree/Root/Item.jsphp');
+        $js = $this->loadFile('_Tree/Root/Item.jsphp');
         $tag = $this->findTagInArray('ui:Tree.Item', $childArray);
+
         $jsContent = $this->convertJsToArray($js, [
-            '$children' => $tag[2][0],
+            '$children' => count($tag) == 3 ? $tag[2][0] : (is_array($tag[1]) ? $tag[1][0] : []),
             '$itemProp' => $itemProp,
             '$keyProp' => $keyProp,
             '$dataProp' => $dataProp,

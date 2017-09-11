@@ -9,13 +9,13 @@ class Monaco extends Page
     public function includeJS()
     {
         return [
-            'Monaco/loader.js'
+            '_Monaco/loader.js'
         ];
     }
 
     public function js()
     {
-        return $this->loadFile('Monaco/Monaco.js');
+        return $this->loadFile('_Monaco/Monaco.js');
     }
 
     public function render()

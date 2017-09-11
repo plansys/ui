@@ -2,18 +2,30 @@ if (!window.plansys.ui) {
     window.plansys.ui = {};
 }
 
-window.plansys.ui.layout = function (that) {
+window.plansys.ui.layout = function (current) {
     const React = window.React;
     const ReactDOM = window.ReactDOM;
-    that.getChildren = () => {
-        if (typeof that.props.children === 'undefined') return [];
-        else if (Array.isArray(that.props.children)) return that.props.children;
-        else return [that.props.children];
+    current.getChildren = () => {
+        if (typeof current.props.children === 'undefined') return [];
+        else if (Array.isArray(current.props.children)) return current.props.children;
+        else return [current.props.children];
     };
 
-    that.getDirection = () => {
+    current.getDataProps = () => {
+        if (typeof current.props !== 'object') return {};
+
+        let dataProps = {};
+        Object.keys(current.props).forEach(propKey => {
+            if (propKey.indexOf('data-') === 0) {
+                dataProps[propKey] = current.props[propKey];
+            }
+        });
+        return dataProps;
+    }
+
+    current.getDirection = () => {
         let result = 'row';
-        that.getChildren().map(tag => {
+        current.getChildren().map(tag => {
             if (!tag || !tag.props || !tag.props['[[name]]']) return null;
 
             if (typeof tag.type === "function" && tag.props['[[name]]'] === 'ui:Layout.Row') {
@@ -23,10 +35,10 @@ window.plansys.ui.layout = function (that) {
         return result;
     };
 
-    that.isLayout = () => {
+    current.isLayout = () => {
         let isLayout = false;
-        if (that.props.children && that.props.children.forEach) {
-            that.props.children.forEach(c => {
+        if (current.props.children && current.props.children.forEach) {
+            current.props.children.forEach(c => {
                 if (!!c.props && c.props['[[name]]'] && c.props['[[name]]'].indexOf('ui:Layout.') === 0) {
                     isLayout = true;
                 }
@@ -35,21 +47,19 @@ window.plansys.ui.layout = function (that) {
         return isLayout;
     };
 
-    that.cloneChildren = (children) => {
+    current.cloneChildren = (children) => {
         return children.map((tag, idx) => {
             if (typeof tag !== 'object') return tag;
             if (!tag || !tag.props || !tag.props['[[name]]']) return null;
 
-            if (that.oldResizedComponent) {
-                if (that.oldResizedComponent._reactInternalInstance._currentElement.key * 1 === idx * 1) {
-                    that.oldResizedComponent = null;
-
+            if (current.oldResizedComponent) {
+                if (current.oldResizedComponent._reactInternalInstance._currentElement.key * 1 === idx * 1) {
                     let size = {};
 
                     if (tag.props['[[name]]'] === 'ui:Layout.Col') {
-                        size.width = that.newComponentSize;
+                        size.width = current.newComponentSize;
                     } else if (tag.props['[[name]]'] === 'ui:Layout.Row') {
-                        size.height = that.newComponentSize;
+                        size.height = current.newComponentSize;
                     }
 
                     let props = {
@@ -65,7 +75,7 @@ window.plansys.ui.layout = function (that) {
             if (tag.props['[[name]]'] === 'ui:Layout.Separator') {
                 return React.cloneElement(tag, {
                     ...tag.props,
-                    updateComponentSize: that.updateComponentSize,
+                    updateComponentSize: current.updateComponentSize,
                     key: idx
                 });
             } else {
@@ -77,12 +87,12 @@ window.plansys.ui.layout = function (that) {
         });
     };
 
-    that.newComponentSize = null;
-    that.oldResizedComponent = null;
-    that.updateComponentSize = (tag, size) => {
-        that.oldResizedComponent = tag;
-        that.newComponentSize = size;
-        that.forceUpdate();
+    current.newComponentSize = null;
+    current.oldResizedComponent = null;
+    current.updateComponentSize = (tag, size) => {
+        current.oldResizedComponent = tag;
+        current.newComponentSize = size;
+        current.forceUpdate();
     };
 
 }
