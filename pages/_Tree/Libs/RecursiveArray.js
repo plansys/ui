@@ -1,6 +1,7 @@
-if (!window.plansys.ui || !window.plansys.ui.tree ) {
-    window.plansys.ui = { ...window.plansys.ui, tree: {} };
+if (!window.plansys.ui.tree) {
+    window.plansys.ui['tree'] = {};
 }
+
 
 window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
     constructor(childKey, customInfo) {
@@ -108,12 +109,15 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
             }
 
             data._wrap = (wrapperObject) => {
-                let wrapper = {
-                    ...wrapperObject,
-                    [CHILD_KEY]: [
-                        data,
-                    ]
-                }
+
+                let wrapper = Object.assign({},
+                    wrapperObject,
+                    {
+                        [CHILD_KEY]: [
+                            data,
+                        ]
+                    });
+                
                 return data._set(wrapper)
             }
 

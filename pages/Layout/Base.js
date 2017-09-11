@@ -62,27 +62,29 @@ window.plansys.ui.layout = function (current) {
                         size.height = current.newComponentSize;
                     }
 
-                    let props = {
-                        ...tag.props,
-                        ...size,
-                        key: idx
-                    };
+                    let props = Object.assign({},
+                        tag.props,
+                        size,
+                        {key: idx}
+                    );
 
                     return React.cloneElement(tag, props);
                 }
             }
 
             if (tag.props['[[name]]'] === 'ui:Layout.Separator') {
-                return React.cloneElement(tag, {
-                    ...tag.props,
-                    updateComponentSize: current.updateComponentSize,
-                    key: idx
-                });
+                return React.cloneElement(tag, Object.assign({},
+                    tag.props,
+                    {
+                        updateComponentSize: current.updateComponentSize,
+                        key: idx
+                    })
+                );
             } else {
-                return React.cloneElement(tag, {
-                    ...tag.props,
-                    key: idx
-                });
+                return React.cloneElement(tag, Object.assign({},
+                    tag.props,
+                    {key: idx}
+                ));
             }
         });
     };

@@ -1,5 +1,5 @@
-if (!window.plansys.ui || !window.plansys.ui.tree ) {
-    window.plansys.ui = { ...window.plansys.ui, tree: {} };
+if (!window.plansys.ui.tree) {
+    window.plansys.ui['tree'] = {};
 }
 
 window.plansys.ui.tree.Mutator = class Mutator {
@@ -15,7 +15,11 @@ window.plansys.ui.tree.Mutator = class Mutator {
         const max = arrayOfPath.length
         if (nextPathIndex !== max) return Mutator._mutateInternal(copy[currentPath], nextPathIndex, arrayOfPath, mutation)
         if (mutation) {
-            copy[currentPath] = is.function(mutation) ? mutation(copy[currentPath]) : {...copy[currentPath], ...mutation}
+            if (is.function(mutation)) {
+                copy[currentPath] = mutation(copy[currentPath]);
+            } else {
+                copy[currentPath] = Object.assign({}, copy[currentPath], mutation);
+            }
         }
 
         return copy[currentPath]
