@@ -1,5 +1,5 @@
-if (!window.plansys.ui || !window.plansys.ui.tree ) {
-    window.plansys.ui = { ...window.plansys.ui, tree: {} };
+if (!window.plansys.ui.tree) {
+    window.plansys.ui['tree'] = {};
 }
 
 window.plansys.ui.tree.Mutator = class Mutator {

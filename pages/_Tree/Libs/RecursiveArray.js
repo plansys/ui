@@ -1,6 +1,7 @@
-if (!window.plansys.ui || !window.plansys.ui.tree ) {
-    window.plansys.ui = { ...window.plansys.ui, tree: {} };
+if (!window.plansys.ui.tree) {
+    window.plansys.ui['tree'] = {};
 }
+
 
 window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
     constructor(childKey, customInfo) {
