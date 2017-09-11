@@ -85,12 +85,12 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
             data._append = (newItem) => {
                 const children = data[CHILD_KEY]
                 if (is.array(children)) {
-                    return data._set({
+                    return data._set(Object.assign({}, {
                         [CHILD_KEY]: [
-                            ...children,
+                            Object.assign({}, children),
                             newItem
                         ]
-                    })
+                    }));
                 }
                 return data._getRoot()
             }
@@ -98,12 +98,13 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
             data._prepend = (newItem) => {
                 const children = data[CHILD_KEY]
                 if (is.array(children)) {
-                    return data._set({
-                        [CHILD_KEY]: [
-                            newItem,
-                            ...children,
-                        ]
-                    })
+                    return data._set(Object.assign({},
+                        {
+                            [CHILD_KEY]: [
+                                newItem,
+                                Object.assign({}, children),
+                            ]
+                        }));
                 }
                 return data._getRoot()
             }
@@ -117,7 +118,7 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
                             data,
                         ]
                     });
-                
+
                 return data._set(wrapper)
             }
 
@@ -143,7 +144,7 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
         }
 
         const result = currentDatas.map((data) => {
-            let newData = {...data}
+            let newData = Object.assign({}, data);
 
             if (clean) {
                 Object.keys(newData).forEach((key) => {
