@@ -21,13 +21,17 @@ if (!window.plansys.ui.popup) {
 
 this.isUnique = true;
 this.instance = this;
+if (!window.plansys.ui.popup[this.props.name]) {
+    window.plansys.ui.popup[this.props.name] = this;
+} else {
+    this.instance = window.plansys.ui.popup[this.props.name];
+    this.isUnique = false;
+    return;
+}
+
 this.on("componentDidMount", () => {
-    if (!window.plansys.ui.popup[this.props.name]) {
-        window.plansys.ui.popup[this.props.name] = this;
+    if (this.isUnique) {
         this.setEventListener("add");
-    } else {
-        this.instance = window.plansys.ui.popup[this.props.name];
-        this.isUnique = false;
     }
 })
 
@@ -56,14 +60,16 @@ this.on("componentDidUpdate", () => {
 })
 
 this.resetTrigger = () => {
-    this.trigger = {
+    this.instance.trigger = {
         el: null,
         event: '',
         data: null,
         prevData: null,
     };
 }
-this.resetTrigger();
+if (!this.instance.trigger) {
+    this.resetTrigger();
+}
 
 this.getTriggerData = (el, captureProp) => {
     let state = null;
@@ -77,7 +83,7 @@ this.getTriggerData = (el, captureProp) => {
 
 this.overlayEl = null;
 this.showOverlay = () => {
-    if (this.trigger.event === 'hover') return false;
+    if (this.instance.trigger.event === 'hover' || !this.instance.trigger) return false;
     return !(this.props.overlay === 'false' || this.props.overlay === false);
 }
 
@@ -96,12 +102,20 @@ this.setPopupPosition = (e, triggerPosition) => {
         let popup = this.instance.popupContainer;
         let left = -999999;
         let top = -999999;
-        const trigger = triggerPosition || {
-            left: e.target.offsetLeft,
-            top: e.target.offsetTop,
-            w: e.target.clientWidth,
-            h: e.target.clientHeight
-        };
+
+        let trigger = triggerPosition || e.target.getBoundingClientRect();
+
+        if (this.instance.trigger.el) {
+            trigger = triggerPosition || this.instance.trigger.el.getBoundingClientRect()
+        }
+
+        trigger.w = trigger.width;
+        trigger.h = trigger.height;
+
+        if (e.pageX && e.pageY) {
+            trigger.pageX = e.pageX;
+            trigger.pageY = e.pageY;
+        }
 
         const cursorSize = 12;
         switch (this.instance.state.position.name) {
@@ -122,24 +136,24 @@ this.setPopupPosition = (e, triggerPosition) => {
                 top = trigger.top + (trigger.h / 2) - (popup.clientHeight / 2);
                 break;
             case 'mouse':
-                left = e.pageX + (cursorSize / 2);
-                top = e.pageY;
+                left = trigger.pageX + (cursorSize);
+                top = trigger.pageY;
                 break;
             case 'mouse-top':
-                left = e.pageX - (popup.clientWidth / 2);
-                top = e.pageY - popup.clientHeight - cursorSize;
+                left = trigger.pageX - (popup.clientWidth / 2);
+                top = trigger.pageY - popup.clientHeight - cursorSize;
                 break;
             case 'mouse-bottom':
-                left = e.pageX - (popup.clientWidth / 2);
-                top = e.pageY + cursorSize;
+                left = trigger.pageX - (popup.clientWidth / 2);
+                top = trigger.pageY + cursorSize;
                 break;
             case 'mouse-left':
-                left = e.pageX - popup.clientWidth - cursorSize;
-                top = e.pageY - (popup.clientHeight / 2);
+                left = trigger.pageX - popup.clientWidth - cursorSize;
+                top = trigger.pageY - (popup.clientHeight / 2);
                 break;
             case 'mouse-right':
-                left = e.pageX + cursorSize;
-                top = e.pageY - (popup.clientHeight / 2);
+                left = trigger.pageX + cursorSize;
+                top = trigger.pageY - (popup.clientHeight / 2);
                 break;
         }
 
@@ -177,14 +191,14 @@ this.show = (e, state) => {
     if (this.instance.popupContainer) {
         this.setPopupPosition(e);
     } else {
-        let triggerPos = {
-            left: e.target.offsetLeft,
-            top: e.target.offsetTop,
-            w: e.target.clientWidth,
-            h: e.target.clientHeight
-        }
+        let trigger = e.target.getBoundingClientRect();
+        trigger.w = trigger.width;
+        trigger.h = trigger.height;
+        trigger.pageX = e.pageX;
+        trigger.pageY = e.pageY;
+
         setTimeout(() => {
-            this.setPopupPosition(e, triggerPos);
+            this.setPopupPosition(e, trigger);
         });
     }
 
@@ -194,7 +208,7 @@ this.show = (e, state) => {
     }, () => {
         setTimeout(() => {
             if (typeof this.props.onShow === 'function') {
-                this.props.onShow(this.instance.state.data);
+                this.props.onShow.bind(this.instance)(this.instance.state.data);
             }
         })
 
@@ -263,24 +277,48 @@ this.updateData = (data) => {
 this.handleClickEvent = (el, e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.trigger.el = el;
-    this.trigger.event = 'click';
-    this.trigger.data = this.getTriggerData(el, 'data-popup-click');
-    this.updateData(this.trigger.data);
+    this.instance.trigger.el = el;
+    this.instance.trigger.event = 'click';
+    this.instance.trigger.data = this.getTriggerData(el, 'data-popup-click');
+    this.updateData(this.instance.trigger.data);
     this.show(e);
 }
-
+this.hoverInTimer = null;
 this.handleHoverIn = (el, e) => {
-    if (this.trigger.el !== el) {
-        this.trigger.el = el;
-        this.trigger.event = 'hover';
-        this.trigger.data = this.getTriggerData(el, 'data-popup-hover');
-        this.updateData(this.trigger.data);
+    e.stopPropagation();
+    e.preventDefault();
+    if (this.instance.trigger.el !== el) {
+        this.instance.trigger.el = el;
+        this.instance.trigger.event = 'hover';
+        this.instance.trigger.data = this.getTriggerData(el, 'data-popup-hover');
+        this.updateData(this.instance.trigger.data);
     }
-    this.show(e);
+
+    if (this.hoverOutTimer) {
+        clearTimeout(this.hoverOutTimer);
+    }
+
+    if (this.props.delay && !this.state.active) {
+        this.hoverInTimer = setTimeout(() => {
+            this.show(e);
+        }, this.props.delay * 1000)
+    } else {
+        this.show(e);
+    }
 };
+this.hoverOutTimer = null;
 this.handleHoverOut = (el, e) => {
-    this.hide(e);
+    if (this.hoverOutTimer) {
+        clearTimeout(this.hoverOutTimer);
+    }
+
+    if (this.hoverInTimer) {
+        clearTimeout(this.hoverInTimer);
+    }
+
+    this.hoverOutTimer = setTimeout(() => {
+        this.hide(e);
+    }, 100);
 };
 
 this.handleEscKey = (e) => {
@@ -295,7 +333,7 @@ this.setEventListener = (mode) => {
     this.setEventListenerInternal(mode, 'data-popup-rclick', 'contextmenu', this.handleClickEvent);
     this.setEventListenerInternal(mode, 'data-popup-click', 'click', this.handleClickEvent);
     this.setEventListenerInternal(mode, 'data-popup-hover', 'mousemove', this.handleHoverIn);
-    this.setEventListenerInternal(mode, 'data-popup-hover', 'mouseout', this.handleHoverOut);
+    this.setEventListenerInternal(mode, 'data-popup-hover', 'mouseleave', this.handleHoverOut);
 
     if (mode === 'add') {
         document.addEventListener('keydown', this.handleEscKey);
@@ -316,12 +354,12 @@ this.setEventListenerInternal = (mode, captureProp, eventName, eventHandler) => 
             el[eventHandlerName] = eventHandler.bind(this, el);
             el.addEventListener(eventName, el[eventHandlerName], false);
 
-            if (this.trigger.el === el) {
-                this.trigger.prevData = this.trigger.data;
-                this.trigger.data = this.getTriggerData(el, captureProp);
+            if (this.instance.trigger.el === el) {
+                this.instance.trigger.prevData = this.instance.trigger.data;
+                this.instance.trigger.data = this.getTriggerData(el, captureProp);
 
-                if (!window.is.shallowEqual(this.trigger.prevData, this.trigger.data)) {
-                    this.updateData(this.trigger.data);
+                if (!window.is.shallowEqual(this.instance.trigger.prevData, this.instance.trigger.data)) {
+                    this.updateData(this.instance.trigger.data);
                 }
             }
         }
