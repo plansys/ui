@@ -92,19 +92,25 @@ this.preventRightClick = (e) => {
 }
 
 this.setPopupPosition = (e, triggerPosition) => {
-    if (this.instance.popupContainer && (e.target || triggerPosition)) {
+    if (this.instance.popupContainer) {
+        const cursorSize = 12;
         let popup = this.instance.popupContainer;
         let left = -999999;
         let top = -999999;
-        const trigger = triggerPosition || {
-            left: e.target.offsetLeft,
-            top: e.target.offsetTop,
-            w: e.target.clientWidth,
-            h: e.target.clientHeight
-        };
+        let trigger = triggerPosition;
+        let positionName = this.instance.state.position.name;
+        if (e === null || !triggerPosition) positionName = 'screen-center-top';
 
-        const cursorSize = 12;
-        switch (this.instance.state.position.name) {
+        if (positionName.indexOf('screen-') !== 0) {
+            trigger = {
+                left: e.target.offsetLeft,
+                top: e.target.offsetTop,
+                w: e.target.clientWidth,
+                h: e.target.clientHeight
+            };
+        }
+
+        switch (positionName) {
             case 'element-top':
                 left = trigger.left + (trigger.w / 2) - (popup.clientWidth / 2);
                 top = trigger.top - popup.clientHeight;
@@ -177,11 +183,15 @@ this.show = (e, state) => {
     if (this.instance.popupContainer) {
         this.setPopupPosition(e);
     } else {
-        let triggerPos = {
-            left: e.target.offsetLeft,
-            top: e.target.offsetTop,
-            w: e.target.clientWidth,
-            h: e.target.clientHeight
+        let triggerPos = null;
+        let positionName = this.instance.state.position.name;
+        if (positionName.indexOf('screen-') !== 0) {
+            triggerPos = {
+                left: e.target.offsetLeft,
+                top: e.target.offsetTop,
+                w: e.target.clientWidth,
+                h: e.target.clientHeight
+            };
         }
         setTimeout(() => {
             this.setPopupPosition(e, triggerPos);
