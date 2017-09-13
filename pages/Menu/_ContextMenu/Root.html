@@ -1,0 +1,21 @@
+<js>
+    let data = this.props.data;
+    return
+    <ui:Popup name="tree-cm" position="mouse">
+        <div className="tree-context-menu">
+            <For each="data.contextMenu" as="menuItem">
+                <If condition="this.contextMenuVisible(data.treeItem, menuItem)">
+                    <If condition="typeof menuItem == 'string'">
+                        <div className="tree-context-menu-itemsep"></div>
+                    </If>
+                    <Else>
+                        <div className="tree-context-menu-item"
+                             js:spread="this.contextMenuProps.bind(this)(data.treeItem, menuItem, hide)">
+                            <js>menuItem.label</js>
+                        </div>
+                    </Else>
+                </If>
+            </For>
+        </div>
+    </ui:Popup>
+</js>

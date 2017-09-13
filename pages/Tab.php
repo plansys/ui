@@ -12,8 +12,8 @@ class Tab extends Page
     {
         return [
             '/_Utils/is.js',
-            '/Tree/Libs/Mutator.js',
-            '/Tree/Libs/RecursiveArray.js',
+            '/_Tree/Libs/Mutator.js',
+            '/_Tree/Libs/RecursiveArray.js',
         ];
     }
 
