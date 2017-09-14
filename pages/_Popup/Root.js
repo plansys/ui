@@ -209,10 +209,15 @@ this.show = (e, data) => {
         });
     }
 
-    this.instance.setState({
-        data,
+    let newState = {
+        ...this.state,
         active: true
-    }, () => {
+    };
+    if (typeof data !== 'undefined') {
+        newState['data'] = data;
+    }
+
+    this.instance.setState(newState, () => {
         setTimeout(() => {
             if (typeof this.props.onShow === 'function') {
                 this.props.onShow.bind(this.instance)(this.instance.state.data);
