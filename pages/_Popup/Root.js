@@ -118,7 +118,7 @@ this.setPopupPosition = (e, triggerPosition) => {
         if (positionName.indexOf('screen-') !== 0) {
             if (this.instance.trigger.el) {
                 trigger = this.instance.trigger.el.getBoundingClientRect()
-            } else {
+            } else if (e.target) {
                 trigger = {
                     left: e.target.offsetLeft,
                     top: e.target.offsetTop,
@@ -194,7 +194,7 @@ this.setPopupPosition = (e, triggerPosition) => {
     }
 }
 
-this.show = (e, state) => {
+this.show = (e, data) => {
     if (this.instance.popupContainer) {
         this.setPopupPosition(e);
     } else {
@@ -210,7 +210,7 @@ this.show = (e, state) => {
     }
 
     this.instance.setState({
-        ...state,
+        data,
         active: true
     }, () => {
         setTimeout(() => {
