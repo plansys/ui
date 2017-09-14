@@ -4,15 +4,13 @@ if (!window.plansys.ui.tree) {
 
 
 window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
-    constructor(childKey, customInfo) {
+    constructor(childKey) {
         this.childKey = childKey;
-        this.customInfo = customInfo;
     }
 
     addInfo(currentDatas, parent, root, depth, path = false) {
         const mutate = window.plansys.ui.tree.Mutator.mutate
 
-        // Using forEach to not mutate the source currentDatas
         currentDatas.forEach((data, i) => {
             if (is.frozen(data)) return false
 
@@ -29,30 +27,30 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
             data._group = currentDatas
             data._groupPath = (path || false)
             data._path = (path ? `${path}.${i}` : `${i}`)
-            data._originalRoot = root
+            data._root = root
 
-            data._getRoot = () => {
-                return this.deepCopy(root, true);
+            data._getRoot = (clean = true) => {
+                return this.deepCopy(root, clean);
             }
 
-            data._set = (mutation) => {
+            data._set = (mutation, cleanRoot = true) => {
                 mutate(root, data._path, mutation);
-                return data._getRoot();
+                return data._getRoot(cleanRoot);
             }
 
-            data._delete = () => {
+            data._delete = (cleanRoot = true) => {
                 data._group.splice(data._index, 1)
-                return data._getRoot()
+                return data._getRoot(cleanRoot)
             }
 
-            data._move = (from, to) => {
+            data._move = (from, to, cleanRoot = true) => {
                 if (!to || !from) false
                 data._group.splice(from, 1)
                 data._group.splice(to, 0, data)
-                return data._getRoot()
+                return data._getRoot(cleanRoot)
             }
 
-            data._insertAt = (siblingIndex, newItem) => {
+            data._insertAt = (siblingIndex, newItem, cleanRoot = true) => {
                 // Get Only
                 const isGet = !newItem
                 if (isGet) return data._group[siblingIndex]
@@ -62,27 +60,27 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
                 if (siblingIndex >= maxIndex) siblingIndex = maxIndex
                 if (siblingIndex < minIndex) siblingIndex = 0
                 data._group.splice(siblingIndex, 0, newItem)
-                return data._getRoot()
+                return data._getRoot(cleanRoot)
             }
 
             data._at = data._insertAt
-            data._next = data._insertNext = (newItem) => {
+            data._next = data._insertNext = (newItem, cleanRoot = true) => {
                 let newItemIndex = data._index + 1
-                return data._insertAt(newItemIndex, newItem)
+                return data._insertAt(newItemIndex, newItem, cleanRoot)
             }
 
-            data._prev = data._insertPrev = (newItem) => {
+            data._prev = data._insertPrev = (newItem, cleanRoot = true) => {
                 const isGet = !newItem
                 if (isGet) return data._group[data._index - 1] || false
                 let newItemIndex = data._index
-                return data._insertAt(newItemIndex, newItem)
+                return data._insertAt(newItemIndex, newItem, cleanRoot)
             }
 
             data._duplicate = () => {
                 return data._next(data)
             }
 
-            data._append = (newItem) => {
+            data._append = (newItem, cleanRoot = true) => {
                 const children = data[CHILD_KEY]
                 if (is.array(children)) {
                     return data._set(Object.assign({}, {
@@ -92,10 +90,10 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
                         ]
                     }));
                 }
-                return data._getRoot()
+                return data._getRoot(cleanRoot)
             }
 
-            data._prepend = (newItem) => {
+            data._prepend = (newItem, cleanRoot = true) => {
                 const children = data[CHILD_KEY]
                 if (is.array(children)) {
                     return data._set(Object.assign({},
@@ -106,7 +104,7 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
                             ]
                         }));
                 }
-                return data._getRoot()
+                return data._getRoot(cleanRoot)
             }
 
             data._wrap = (wrapperObject) => {
@@ -164,7 +162,8 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
         return isSingle ? result[0] : result
     }
 
-    remakeData(datas) {
+    remakeData(datas, customInfo) {
+        this.customInfo = customInfo;
         let newDatas = datas
         newDatas = this.deepCopy(newDatas)
         newDatas = this.addInfo(newDatas, false, newDatas, 0)

@@ -8,6 +8,4 @@ class CreateMenu extends \Yard\Page
     {
     }
 
-    public function 
-
 }

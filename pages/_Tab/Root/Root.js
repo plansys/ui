@@ -18,8 +18,21 @@ this.tag = () => {
 };
 
 const remakeData = (datas) => {
-    const recursiveArray = new window.plansys.ui.tree.RecursiveArray(this.props.childKey)
-    return recursiveArray.remakeData(datas)
+    this.recursiveArray = new window.plansys.ui.tree.RecursiveArray(this.props.childKey)
+    return this.recursiveArray.remakeData(datas, item => {
+        item._close = () => {
+            if (item._root.length > 1 && item.active) {
+                let newActiveItem = item._next() || item._prev();
+                let result = newActiveItem._set({
+                    active: true
+                }, false)
+                return result[item._index]._delete();
+            } else {
+                return item._delete();
+            }
+        }
+        return item;
+    })
 }
 
 this.remakeData = remakeData

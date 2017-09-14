@@ -26,7 +26,6 @@ if (!window.plansys.ui.popup[this.props.name]) {
 } else {
     this.instance = window.plansys.ui.popup[this.props.name];
     this.isUnique = false;
-    return;
 }
 
 this.on("componentDidMount", () => {
@@ -81,7 +80,6 @@ this.getTriggerData = (el, captureProp) => {
     return state;
 };
 
-this.overlayEl = null;
 this.showOverlay = () => {
     if (this.instance.trigger.event === 'hover' || !this.instance.trigger) return false;
     return !(this.props.overlay === 'false' || this.props.overlay === false);
@@ -237,11 +235,10 @@ this.preventOutOfScreen = ({top, left}) => {
     const maxRight = window.innerWidth
     const maxBottom = window.innerHeight
 
-    const newPosition = {top, left}
-
-    const maxLeft = 0
-    const outOfScreenLeft = left < maxLeft
-    if (outOfScreenLeft) newPosition.left = THRESHOLD
+    const newPosition = {
+        top:Math.max(THRESHOLD, top) ,
+        left: Math.max(THRESHOLD, left)
+    };
 
     const contentWidth = this.instance.popupContainer.clientWidth
     const offsetRightComponent = left + contentWidth
