@@ -107,6 +107,10 @@ window.plansys.ui.tree.RecursiveArray = class RecursiveArray {
                 return data._getRoot(cleanRoot)
             }
 
+            data._equal = (item) => {
+                return is.shalowEqual(data._original, item && item._original ? item._original : item);
+            }
+
             data._wrap = (wrapperObject) => {
 
                 let wrapper = Object.assign({},
