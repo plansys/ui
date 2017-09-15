@@ -194,6 +194,7 @@ this.setPopupPosition = (e, triggerPosition) => {
     }
 }
 
+this.resolveShow = null;
 this.show = (e, data) => {
     if (this.instance.popupContainer) {
         this.setPopupPosition(e);
@@ -230,6 +231,10 @@ this.show = (e, data) => {
 
         this.instance.props['__parent'].forceUpdate();
     })
+
+    return new Promise(resolve => {
+        this.resolveShow = resolve;
+    });
 }
 
 this.hide = (e) => {

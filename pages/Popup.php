@@ -46,6 +46,7 @@ class Popup extends \Yard\Page
     if (this._popup{$instanceIdx}) {
         let {$dataProp} = this._popup{$instanceIdx}.state.data;
         let hide = this._popup{$instanceIdx}.hide;
+        let resolve = this._popup{$instanceIdx}.resolveShow;
         return {$childStr};
     }
 </js>
