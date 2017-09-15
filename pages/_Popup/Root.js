@@ -204,6 +204,10 @@ this.show = (e, data) => {
         triggerPos.pageX = e.pageX;
         triggerPos.pageY = e.pageY;
 
+        if (this.trigger.event !== 'hover') {
+            this.resetTrigger();
+        }
+
         setTimeout(() => {
             this.setPopupPosition(e, triggerPos);
         });
