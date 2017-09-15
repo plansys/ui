@@ -51,6 +51,8 @@ class Popup extends \Yard\Page
 </js>
 JS;
 
+        $props['__parent'] = 'js: this';
+
         return [
             'props' => $props,
             'children' => $wrappedChild

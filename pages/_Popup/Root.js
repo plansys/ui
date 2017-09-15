@@ -224,7 +224,7 @@ this.show = (e, data) => {
             }
         })
 
-        this.instance.props['[[parent]]'].forceUpdate();
+        this.instance.props['__parent'].forceUpdate();
     })
 }
 
@@ -276,7 +276,7 @@ this.preventOutOfScreen = ({top, left}) => {
 
 this.updateData = (data) => {
     let callback = () => {
-        this.props['[[parent]]'].forceUpdate();
+        this.props['__parent'].forceUpdate();
     }
     if (typeof data === 'object') {
         this.instance.setState({data: {...data}}, callback);
