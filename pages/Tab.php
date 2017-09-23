@@ -53,16 +53,24 @@ class Tab extends Page
         $children = $this->addKeyInTagChild('ui:Tab.Nav', 'key', $childArray);
         $tabNav = self::findTagInArray('ui:Tab.Nav', $childArray);
         $shouldWrapTabNav = false;
-        if (is_array($tabNav) && count($tabNav) == 3) {
-            $shouldWrapTabNav = count($tabNav[2]) > 1;
+        if (is_array($tabNav)) {
+            if (count($tabNav) == 3) {
+                $shouldWrapTabNav = count($tabNav[2]) > 1;
+            } else if (count($tabNav) == 2 && !self::is_assoc($tabNav)) {
+                $shouldWrapTabNav = count($tabNav[1]) > 1;
+            }
         }
         $children = $this->replaceTabNav($children, $instanceIdx, $itemProp, $dataProp, $shouldWrapTabNav);
 
         # set content
         $tabContent = self::findTagInArray('ui:Tab.Content', $childArray);
         $shouldWrapTabContent = false;
-        if (is_array($tabContent) && count($tabContent) == 3) {
-            $shouldWrapTabContent = count($tabContent[2]) > 1;
+        if (is_array($tabContent)) {
+            if (count($tabContent) == 3) {
+                $shouldWrapTabContent = count($tabContent[2]) > 1;
+            } else if (count($tabContent) == 2 && !self::is_assoc($tabContent)) {
+                $shouldWrapTabContent = count($tabContent[1]) > 1;
+            }
         }
         $children = $this->replaceContent($children, $instanceIdx, $itemProp, $shouldWrapTabContent);
 
@@ -76,6 +84,8 @@ class Tab extends Page
             }
             $children = $this->renderComponentAsHtml($childArray);
         }
+
+        $props['__parent'] = 'js: this';
 
         # return
         return [
@@ -127,6 +137,7 @@ JS;
             return {$children};
         }
         
+        {/*console.log(currentTab);*/}
         if (currentTab && currentTab.active) {
             return renderTabContent(currentTab.active);
         }

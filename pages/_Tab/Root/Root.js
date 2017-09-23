@@ -1,3 +1,8 @@
+this.active = null;
+this.activate = item => {
+    this.active = item;
+}
+
 // https://www.npmjs.com/package/lil-uuid
 function uuid() {
     var uuid = '', i, random
@@ -18,16 +23,31 @@ this.tag = () => {
 };
 
 const remakeData = (datas) => {
+    let hasBeenActivated = false;
     this.recursiveArray = new window.plansys.ui.tree.RecursiveArray(this.props.childKey)
+
+    setTimeout(() => {
+        if (hasBeenActivated) {
+            this.activate(null);
+        }
+    })
+
     return this.recursiveArray.remakeData(datas, item => {
+        if (item.active) {
+            hasBeenActivated = true;
+            this.activate(item);
+        }
+
         item._close = () => {
             if (item._root.length > 1 && item.active) {
                 let newActiveItem = item._next() || item._prev();
                 let result = newActiveItem._set({
                     active: true
                 }, false)
+                this.activate(result[newActiveItem._index]);
                 return result[item._index]._delete();
             } else {
+                this.activate(null);
                 return item._delete();
             }
         }
