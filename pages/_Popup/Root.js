@@ -199,12 +199,14 @@ this.show = (e, data) => {
     if (this.instance.popupContainer) {
         this.setPopupPosition(e);
     } else {
-        let triggerPos = e.target.getBoundingClientRect();
-        triggerPos.w = triggerPos.width;
-        triggerPos.h = triggerPos.height;
-        triggerPos.pageX = e.pageX;
-        triggerPos.pageY = e.pageY;
-
+        let triggerPos = null;
+        if (e) {
+            triggerPos = e.target.getBoundingClientRect();
+            triggerPos.w = triggerPos.width;
+            triggerPos.h = triggerPos.height;
+            triggerPos.pageX = e.pageX;
+            triggerPos.pageY = e.pageY;
+        }
         if (this.trigger.event !== 'hover') {
             this.resetTrigger();
         }
@@ -222,6 +224,7 @@ this.show = (e, data) => {
         newState['data'] = data;
     }
 
+    console.log(newState);
     this.instance.setState(newState, () => {
         setTimeout(() => {
             if (typeof this.props.onShow === 'function') {
@@ -347,6 +350,7 @@ this.handleEscKey = (e) => {
             this.hide(e);
         }
     }
+    return true;
 }
 
 this.setEventListener = (mode) => {
