@@ -53,7 +53,7 @@ window.plansys.ui.layout = function (current) {
             if (!tag || !tag.props || !tag.props['[[name]]']) return null;
 
             if (current.oldResizedComponent) {
-                if (current.oldResizedComponent._reactInternalInstance._currentElement.key * 1 === idx * 1) {
+                if (current.oldResizedComponent._reactInternalFiber.key * 1 === idx * 1) {
                     let size = {};
 
                     if (tag.props['[[name]]'] === 'ui:Layout.Col') {

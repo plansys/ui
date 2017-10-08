@@ -56,3 +56,14 @@ const remakeData = (datas) => {
 }
 
 this.remakeData = remakeData
+
+this.cloneKeyedChildren = (children) => {
+    if (typeof children == 'object' && children.length > 0) {
+        return children.map((c,idx) => {
+            return React.cloneElement(c, Object.assign({}, c.props, {
+                key: idx
+            }));
+        })
+    } 
+    return children;
+}

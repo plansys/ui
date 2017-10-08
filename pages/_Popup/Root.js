@@ -74,7 +74,7 @@ this.getTriggerData = (el, captureProp) => {
     let state = null;
     for (let key in el) {
         if (key.startsWith("__reactInternalInstance$")) {
-            state = el[key]._currentElement.props[`${captureProp}\:${this.props['name']}`];
+            state = el[key].memoizedProps[`${captureProp}\:${this.props['name']}`];
         }
     }
     return state;
@@ -224,7 +224,6 @@ this.show = (e, data) => {
         newState['data'] = data;
     }
 
-    console.log(newState);
     this.instance.setState(newState, () => {
         setTimeout(() => {
             if (typeof this.props.onShow === 'function') {

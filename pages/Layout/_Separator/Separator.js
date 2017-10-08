@@ -19,10 +19,6 @@ this.isDragging = () => {
     return this.drag.dragging ? 'dragging' : '';
 };
 
-this.getParent = (el) => {
-    return el._reactInternalInstance._currentElement._owner._instance;
-};
-
 this.handleMouseUp = e => {
     this.drag = {
         dragging: false
@@ -124,20 +120,20 @@ this.handleMouseMove = e => {
 };
 
 this.getType = () => {
-    let parent = this.getParent(this);
-    let childs = parent._reactInternalInstance._hostParent._renderedChildren;
+    let parent = this._getOwner();
+    let childs = parent._getRenderedChilds();
     let current = null;
     for (let i in childs) {
         let c = childs[i];
         if (current !== null) {
-            this.next = c._instance;
+            this.next = c;
             break;
         }
-        if (c._instance === this.props['[[loader]]']) {
-            current = c._instance;
+        if (c === this.props['[[loader]]']) {
+            current = c;
         }
         if (current === null) {
-            this.prev = c._instance;
+            this.prev = c;
         }
     }
 
